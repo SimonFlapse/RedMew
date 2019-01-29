@@ -163,29 +163,47 @@ global.config = {
         }
     },
     -- spawns more units when one dies
+    -- For void gears save ONLY!!! time_factor 0.004% (10 fold increase) pollution_factor 0.0045% (3 fold increase)
     hail_hydra = {
-        enabled = false,
+        enabled = true,
         -- at which scale the evolution will increase the additional hydra spawns
         -- to disable scaling with evolution, set to 0.
         -- the formula: chance = hydra_chance + (evolution_factor * evolution_scale)
         -- example: small spitter has 0.2, which is 20% at 0% and 120% at an evolution_factor of 1
-        evolution_scale = 1,
+        evolution_scale = 0.4,
         -- any non-rounded number will turn into a chance to spawn an additional alien
         -- example: 2.5 would spawn 2 for sure and 50% chance to spawn one additionally
         hydras = {
             -- spitters
-            ['small-spitter'] = {['small-worm-turret'] = 0.2},
-            ['medium-spitter'] = {['medium-worm-turret'] = 0.2},
-            ['big-spitter'] = {['big-worm-turret'] = 0.2},
-            ['behemoth-spitter'] = {['big-worm-turret'] = 0.4},
+            ['small-spitter'] = {['small-worm-turret'] = 0},      -- 0.8
+            ['medium-spitter'] = {['medium-worm-turret'] = 0},    -- 0.8
+            ['big-spitter'] = {['big-worm-turret'] = 0},          -- 0.8
+            ['behemoth-spitter'] = {['big-worm-turret'] = 0.1},   -- 0.9
             -- biters
-            ['medium-biter'] = {['small-biter'] = 1.2},
-            ['big-biter'] = {['medium-biter'] = 1.2},
-            ['behemoth-biter'] = {['big-biter'] = 1.2},
+            ['medium-biter'] = {['small-biter'] = 1.6},     --2
+            ['big-biter'] = {['medium-biter'] = 1.6},       --2
+            ['behemoth-biter'] = {['big-biter'] = 1.6},     --2
             -- worms
-            ['small-worm-turret'] = {['small-biter'] = 2.5},
-            ['medium-worm-turret'] = {['small-biter'] = 2.5, ['medium-biter'] = 0.6},
-            ['big-worm-turret'] = {['small-biter'] = 3.8, ['medium-biter'] = 1.3, ['big-biter'] = 1.1}
+            ['small-worm-turret'] = {
+                ['small-biter'] = 3.6,      -- 4
+                ['small-spitter'] = 0.7     -- 1.5
+            },
+            ['medium-worm-turret'] = {
+                ['small-biter'] = 3.6,      -- 4
+                ['medium-biter'] = 2.1,     -- 2.5
+                ['small-spitter'] = 1.1,    -- 2
+                ['medium-spitter'] = 0.7    -- 1.5
+            },
+            ['big-worm-turret'] = {
+                ['small-biter'] = 4.6,          -- 5
+                ['medium-biter'] = 3.1,         -- 3.5
+                ['big-biter'] = 1.1,            -- 1.5
+                ['small-spitter'] = 1.6,        -- 3
+                ['medium-spitter'] = 1.1,       -- 2.5
+                ['big-spitter'] = 0.6,          -- 1.1
+                ['behemoth-biter'] = -0.1,      -- 0.3
+                ['behemoth-spitter'] = -0.15     -- 0.25
+            }
         }
     },
     -- grants reward coins for certain actions

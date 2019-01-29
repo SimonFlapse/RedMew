@@ -315,36 +315,48 @@ local Config = {
 
         },
 
-        -- controls the alien spawning mechanic
-        AlienSpawner = {
+        -- spawns more units when one dies
+        hail_hydra = {
             enabled = true,
-
-            -- minimum distance from spawn before aliens can spawn
-            alien_minimum_distance = 40,
-
-            -- chance of spawning aliens when mining
-            alien_probability = 0.05,
-
-            -- spawns the following units when they die. To disable, remove the contents
+            -- at which scale the evolution will increase the additional hydra spawns
+            -- to disable scaling with evolution, set to 0.
+            -- the formula: chance = hydra_chance + (evolution_factor * evolution_scale)
+            -- example: small spitter has 0.2, which is 20% at 0% and 120% at an evolution_factor of 1
+            evolution_scale = 1,
             -- any non-rounded number will turn into a chance to spawn an additional alien
             -- example: 2.5 would spawn 2 for sure and 50% chance to spawn one additionally
-            hail_hydra = {
+            hydras = {
                 -- spitters
                 ['small-spitter'] = {['small-worm-turret'] = 0.2},
                 ['medium-spitter'] = {['medium-worm-turret'] = 0.2},
                 ['big-spitter'] = {['big-worm-turret'] = 0.2},
                 ['behemoth-spitter'] = {['big-worm-turret'] = 0.4},
-
                 -- biters
                 ['medium-biter'] = {['small-biter'] = 1.2},
                 ['big-biter'] = {['medium-biter'] = 1.2},
                 ['behemoth-biter'] = {['big-biter'] = 1.2},
-
                 -- worms
-                ['small-worm-turret'] = {['small-biter'] = 2.5},
-                ['medium-worm-turret'] = {['small-biter'] = 2.5, ['medium-biter'] = 0.6},
-                ['big-worm-turret'] = {['small-biter'] = 3.8, ['medium-biter'] = 1.3, ['big-biter'] = 1.1},
-            },
+                ['small-worm-turret'] = {
+                    ['small-biter'] = 0,
+                    ['small-spitter'] = 5
+                },
+                ['medium-worm-turret'] = {
+                    ['small-biter'] = 3.8,
+                    ['medium-biter'] = 0.3,
+                    ['small-spitter'] = -0.2,
+                    ['medium-spitter'] = -0.3
+                },
+                ['big-worm-turret'] = {
+                    ['small-biter'] = 3.8,
+                    ['medium-biter'] = 1.3,
+                    ['big-biter'] = 0.8,
+                    ['small-spitter'] = -0.1,
+                    ['medium-spitter'] = -0.16,
+                    ['big-spitter'] = -0.24,
+                    ['behemoth-biter'] = -0.36,
+                    ['behemoth-spitter'] = -0.38
+                }
+            }
         },
 
         --Tracks players causing collapses

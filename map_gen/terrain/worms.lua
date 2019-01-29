@@ -1,7 +1,7 @@
 local worms_per_chunk = 50
-local small_worm_spawn_distance = 100
+local small_worm_spawn_distance = 85
 local medium_worm_spawn_distance = 150
-local big_worm_spawn_distance = 200
+local big_worm_spawn_distance = 250
 
 local worm_names = {'small-worm-turret', 'medium-worm-turret', 'big-worm-turret'}
 

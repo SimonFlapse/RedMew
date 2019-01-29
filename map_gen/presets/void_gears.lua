@@ -6,8 +6,10 @@ local Random = require 'map_gen.shared.random'
 local RS = require 'map_gen.shared.redmew_surface'
 local MGSP = require 'resources.map_gen_settings'
 
-local seed1 = 6666
-local seed2 = 9999
+local Danger_Ore = require 'map_gen.misc.danger_ore_banned_entities'
+
+local seed1 = 12
+local seed2 = 5
 
 RS.set_map_gen_settings(
     {
@@ -33,12 +35,12 @@ local gear_small = b.scale(gear_big, 1 / 3)
 local value = b.manhattan_value
 
 local ores = {
-    {resource_type = 'iron-ore', value = value(250, 1.5)},
-    {resource_type = 'copper-ore', value = value(250, 1.5)},
-    {resource_type = 'stone', value = value(250, 1)},
-    {resource_type = 'coal', value = value(250, 1)},
-    {resource_type = 'uranium-ore', value = value(125, 1)},
-    {resource_type = 'crude-oil', value = value(50000, 250)}
+    {resource_type = 'iron-ore', value = value(50, 1.5)},
+    {resource_type = 'copper-ore', value = value(50, 1.5)},
+    {resource_type = 'stone', value = value(50, 1)},
+    {resource_type = 'coal', value = value(50, 1)},
+    {resource_type = 'uranium-ore', value = value(25, 1)},
+    {resource_type = 'crude-oil', value = value(20000, 150)}
 }
 local function striped(shape) -- luacheck: ignore 431
     return function(x, y, world)
@@ -141,12 +143,12 @@ medium_patches[#medium_patches + 1] = {
 
 local small_patches = {
     {b.no_entity, 85},
-    {b.resource(gear_small, ores[1].resource_type, value(350, 2)), 20},
-    {b.resource(gear_small, ores[2].resource_type, value(350, 2)), 12},
-    {b.resource(gear_small, ores[3].resource_type, value(350, 2)), 4},
-    {b.resource(gear_small, ores[4].resource_type, value(350, 2)), 6},
-    {b.resource(gear_small, ores[5].resource_type, value(250, 2)), 2},
-    {b.resource(b.throttle_world_xy(gear_small, 1, 4, 1, 4), ores[6].resource_type, ores[6].value), 6},
+    {b.resource(gear_small, ores[1].resource_type, value(150, 1.5)), 20},
+    {b.resource(gear_small, ores[2].resource_type, value(150, 1.2)), 12},
+    {b.resource(gear_small, ores[3].resource_type, value(150, 1)), 4},
+    {b.resource(gear_small, ores[4].resource_type, value(150, 1)), 6},
+    {b.resource(gear_small, ores[5].resource_type, value(50, 1)), 2},
+    {b.resource(b.throttle_world_xy(gear_small, 1, 4, 1, 4), ores[6].resource_type, ores[6].value), 1},
     {striped(gear_small), 1},
     {sprinkle(gear_small), 1},
     {radial(gear_small, 16), 1}
@@ -212,7 +214,7 @@ local start_stone =
     gear_big,
     'stone',
     function()
-        return 400
+        return 200
     end
 )
 local start_coal =
@@ -220,7 +222,7 @@ local start_coal =
     gear_big,
     'coal',
     function()
-        return 800
+        return 400
     end
 )
 local start_copper =
@@ -228,7 +230,7 @@ local start_copper =
     gear_big,
     'copper-ore',
     function()
-        return 800
+        return 400
     end
 )
 local start_iron =
@@ -236,7 +238,7 @@ local start_iron =
     gear_big,
     'iron-ore',
     function()
-        return 1600
+        return 600
     end
 )
 local start_segmented = b.segment_pattern({start_stone, start_coal, start_copper, start_iron})
