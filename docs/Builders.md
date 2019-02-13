@@ -173,7 +173,7 @@ local shape = b.rectangular_spiral(10, 10)
 ## Builders.circular_spiral
 Creates an infinite circular spiral <br>
 
-`@param in_thickness int` defines the number of land tiles the spiral contains <br> `@param total_thickness int` defines the number of total tiles the spiral spans over (The gap is `total_thickness - in_thickness`)
+`@param in_thickness int` defines the number of land tiles the spiral contains <br> `@param total_thickness int` defines the number of total tiles the spiral spans over (The gap is `total_thickness - in_thickness`) <br> `@see circular_spiral_grow for comparison`
 
 _Example_
 ```lua
@@ -185,7 +185,7 @@ local shape = b.circular_spiral(5, 10)
 ## Builders.circular_spiral_grow
 Creates an infinite growing circular spiral <br>
 
-`@param in_thickness int` defines the number of land tiles the spiral contains <br> `@param total_thickness int` defines the number of total tiles the spiral spans over (The gap is `total_thickness - in_thickness`) <br> `@param grow_factor int` defines how quickly the spiral grow. (Lower numbers result in faster growth, larger number in slower.)
+`@param in_thickness int` defines the number of land tiles the spiral contains <br> `@param total_thickness int` defines the number of total tiles the spiral spans over (The gap is `total_thickness - in_thickness`) <br> `@param grow_factor int` defines how quickly the spiral grow. (Lower numbers result in faster growth, larger number in slower.) <br> `@see circular_spiral for comparison`
 
 _Example_
 ```lua
@@ -195,10 +195,29 @@ local shape = b.circular_spiral(5, 10, 50)
 ![image](https://user-images.githubusercontent.com/44922798/52706325-6b5e2a80-2f85-11e9-9cae-1502691a9750.png)
 
 ## Builders.circular_spiral_n_threads
-**TBC**
+Creates a number of threads of infinite circular spirals <br>
+
+`@param in_thickness int` defines the number of land tiles the spiral contains <br> `@param total_thickness int` defines the number of total tiles the spiral spans over (The gap is `total_thickness - in_thickness`) <br> `@param n_threads int` defines the number of threads/spirals <br> `@see circular_spiral for comparison` <br> `@see circular_spiral_grow_n_threads for comparison`
+
+_Example_
+```lua
+local shape = b.circular_spiral_n_threads(5, 10, 2) 
+```
+
+![image](https://user-images.githubusercontent.com/44922798/52716633-7aea6d00-2f9f-11e9-9a9c-62b6a868cfee.png)
 
 ## Builders.circular_spiral_grow_n_threads
-**TBC**
+Creates a number of infinite growing circular spirals <br>
+
+`@param in_thickness int` defines the number of land tiles the spiral contains <br> `@param total_thickness int` defines the number of total tiles the spiral spans over (The gap is `total_thickness - in_thickness`) <br> `@param grow_factor int` defines how quickly the spiral grow. (Lower numbers result in faster growth, larger number in slower.) <br> `@param n_threads int` defines the number of threads/spirals <br> `@see circular_spiral_grow for comparison` <br> `@see circular_spiral_n_threads for comparison`
+
+_Example_
+```lua
+local shape = b.circular_spiral_grow_n_threads(5, 10, 50, 2) 
+```
+
+![image](https://user-images.githubusercontent.com/44922798/52716887-111e9300-2fa0-11e9-9ec6-8370ddb26ade.png)
+
 
 ## Builders.decompress
 **TBC**
@@ -207,19 +226,132 @@ local shape = b.circular_spiral(5, 10, 50)
 **TBC**
 
 ## Builders.translate
-**TBC**
+Translates a shapes position
+
+`@param shape function` the function of a shape to be translated (Must have format function(x, y, world) where world is optional) <br> `@param x_offset int` <br> `@param y_offset int` <br>
+
+_Example_
+<br>
+Using a rectangle shape
+```lua
+local shape = b.translate(b.rectangle(16, 8), 8, 4)
+```
+
+Player is at position (0, 0) <br>
+Without translation (Water added for illustrational purposes) <br>
+![image](https://user-images.githubusercontent.com/44922798/52717279-116b5e00-2fa1-11e9-9c22-badbd9df6e3c.png) <br>
+With translation (Water added for illustrational purposes) <br>
+![image](https://user-images.githubusercontent.com/44922798/52717248-fb5d9d80-2fa0-11e9-946a-ad10703fc2b3.png)
+
+## Builders.scale
+Scales a shapes
+
+`@param shape function` the function of a shape to be scaled (Must have format function(x, y, world) where world is optional) <br> `@param x_scale int` <br> `@param y_scale int` <br>
+
+_Example_
+<br>
+Using a rectangle shape
+```lua
+local shape = b.scale(b.rectangle(16, 8), 1, 2)
+```
+
+Player is at position (0, 0) <br>
+Without scaling (Water added for illustrational purposes) <br>
+![image](https://user-images.githubusercontent.com/44922798/52717279-116b5e00-2fa1-11e9-9c22-badbd9df6e3c.png) <br>
+With scaling (Water added for illustrational purposes) <br>
+![image](https://user-images.githubusercontent.com/44922798/52718083-e7b33680-2fa2-11e9-8c54-628666bd05f9.png)
 
 ## Builders.rotate
-**TBC**
+Rotates a shape counter clockwise
+
+`@param shape function` the function of a shape to be rotated (Must have format function(x, y, world) where world is optional) <br> `@param angle int` specified in radians (NOT degrees) <br>
+
+_Example_
+<br>
+Using a rectangle shape
+```lua
+local shape = b.rotate(b.rectangle(16, 8), math.pi/2)
+```
+
+Player is at position (0, 0) <br>
+Without rotation (Water added for illustrational purposes) <br>
+![image](https://user-images.githubusercontent.com/44922798/52717279-116b5e00-2fa1-11e9-9c22-badbd9df6e3c.png) <br>
+With rotation (Water added for illustrational purposes) <br>
+![image](https://user-images.githubusercontent.com/44922798/52717882-6eb3df00-2fa2-11e9-8a2b-84937d43dda9.png)
 
 ## Builders.flip_x
-**TBC**
+Flips a shape along the x-axis
+Equivalent to rotate by pi
+
+`@param shape function` the function of a shape to be flipped (Must have format function(x, y, world) where world is optional) <br>
+
+_Example_
+<br>
+Using a L shape
+```lua
+-- creating the L shape
+local pre_shape = b.translate(b.rectangle(16, 8), 4, 0)
+pre_shape = b.add(shape1, b.rotate(shape1), math.pi/2)
+
+--applying flip_x
+local shape = b.flip_x(pre_shape)
+```
+
+Player is at position (0, 0) <br>
+Without flipping along x (Water added for illustrational purposes) <br>
+![image](https://user-images.githubusercontent.com/44922798/52718941-e1be5500-2fa4-11e9-8827-34ff98f0cde8.png) <br>
+With flipping along x (Water added for illustrational purposes) <br>
+![image](https://user-images.githubusercontent.com/44922798/52718975-f1d63480-2fa4-11e9-9018-3134b1954ade.png)
 
 ## Builders.flip_y
-**TBC**
+Flips a shape along the y-axis
+Equivalent to rotate by -pi
+
+`@param shape function` the function of a shape to be flipped (Must have format function(x, y, world) where world is optional) <br>
+
+_Example_
+<br>
+Using a rectangle rotated shape
+```lua
+-- creating the L shape
+local pre_shape = b.translate(b.rectangle(16, 8), 4, 0)
+pre_shape = b.add(shape1, b.rotate(shape1), math.pi/2)
+
+--applying flip_y
+local shape = b.flip_y(pre_shape)
+```
+
+
+Player is at position (0, 0) <br>
+Without flipping along y (Water added for illustrational purposes) <br>
+![image](https://user-images.githubusercontent.com/44922798/52718941-e1be5500-2fa4-11e9-8827-34ff98f0cde8.png) <br>
+With flipping along y (Water added for illustrational purposes) <br>
+![image](https://user-images.githubusercontent.com/44922798/52719040-1500e400-2fa5-11e9-9188-a77766a3161c.png)
 
 ## Builders.flip_xy
-**TBC**
+Flips a shape along the xy-axis
+Equivalent to rotate by 2pi
+
+`@param shape function` the function of a shape to be flipped (Must have format function(x, y, world) where world is optional) <br>
+
+_Example_
+<br>
+Using a rectangle rotated shape
+```lua
+-- creating the L shape
+local pre_shape = b.translate(b.rectangle(16, 8), 4, 0)
+pre_shape = b.add(shape1, b.rotate(shape1), math.pi/2)
+
+--applying flip_y
+local shape = b.flip_xy(pre_shape)
+```
+
+
+Player is at position (0, 0) <br>
+Without flipping along xy (Water added for illustrational purposes) <br>
+![image](https://user-images.githubusercontent.com/44922798/52718941-e1be5500-2fa4-11e9-8827-34ff98f0cde8.png) <br>
+With flipping along xy (Water added for illustrational purposes) <br>
+![image](https://user-images.githubusercontent.com/44922798/52719333-bbe58000-2fa5-11e9-92be-4eac6d76937f.png)
 
 ## Builders.any
 **TBC**
