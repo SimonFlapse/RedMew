@@ -42,6 +42,11 @@ The generate module works after the charting has been executed! Wait a while for
 
 # Functions
 
+## Notes
+Every shape is a function with the format function(x, y, world), during map generation the shape function is called with the current x and y coordinate. These coordinates are from the center of a tile resulting in always ending with .5 (eg. 10.5 instead of 10) to get the correct coordinate you can use `world.x` or `world.y` (eg. `x` = 10.5 `world.x` = 10)
+
+Another usage of `world` is when manipulating a shape (eg. by translation) this changes the x and y coordinates while `world.x` and `world.y` will return the true coordinates
+
 ## Builders.rectangle
 Creates a rectangular shape
 
@@ -488,18 +493,90 @@ After inversion (Water added for illustrational purposes, acts as false) <br>
 
 
 ## Builders.throttle_x
+Cuts horizontal lines in a shape
+
+`@param shape function` the function of the shape to be throttled (Must have format function(x, y, world) where world is optional)  <br> `@param x_in int` width of tiles unaffected <br> `@param x_size int` total width of a single part of the throttled shape (affected tiles width equals `(x_size - x_in)/2`)
+
+_Example_
+<br>
+Using a rectangle
+```lua
+-- creating the rectangle
+local rectangle = b.rectangle(20, 20)
+
+--applying throttle_x
+local shape = b.throttle_x(rectangle, 2, 4)
+```
+
+Before throttle_x (Water added for illustrational purposes, acts as false) <br>
+![image](https://user-images.githubusercontent.com/44922798/52725661-ee957580-2fb1-11e9-9339-4bcb1ea16bee.png) <br>
+After throttle_x (Water added for illustrational purposes, acts as false) <br>
+![image](https://user-images.githubusercontent.com/44922798/52725579-ce65b680-2fb1-11e9-9742-150f2ecb2224.png)
+
+_Elaboration_
+<br>
+Calling `builders.throttle_x` with `x_in` as `2` and `x_size` as `4` results in the rectangle being cut into `20 / x_size <=> 5` pieces each with width `x_size <=> 4`. Since `x_in` is `2`, two tiles in the width are kept as land (true), while `(x_size - x_in) / 2 <=> 1` tile on either side is discarded as water/void (false).
 
 ## Builders.throttle_y
+Cuts vertical lines in a shape
+
+`@param shape function` the function of the shape to be throttled (Must have format function(x, y, world) where world is optional)  <br> `@param y_in int` height of tiles unaffected <br> `@param y_size int` total height of a single part of the throttled shape (affected tiles height equals `(y_size - y_in)/2`)
+
+_Example_
+<br>
+Using a rectangle
+```lua
+-- creating the rectangle
+local rectangle = b.rectangle(20, 20)
+
+--applying throttle_y
+local shape = b.throttle_y(rectangle, 2, 4)
+```
+
+Before throttle_y (Water added for illustrational purposes, acts as false) <br>
+![image](https://user-images.githubusercontent.com/44922798/52725661-ee957580-2fb1-11e9-9339-4bcb1ea16bee.png) <br>
+After throttle_y (Water added for illustrational purposes, acts as false) <br>
+![image](https://user-images.githubusercontent.com/44922798/52726804-31584d00-2fb4-11e9-8c7a-c3d848018a89.png)
+
+_Elaboration_
+<br>
+Calling `builders.throttle_y` with `y_in` as `2` and `y_size` as `4` results in the rectangle being cut into `20 / y_size <=> 5` pieces each with width `y_size <=> 4`. Since `y_in` is `2`, two tiles in the height are kept as land (true), while `(y_size - y_in) / 2 <=> 1` tile above and below is discarded as water/void (false).
+
 
 ## Builders.throttle_xy
+Applies `Builders.throttle_x` and `Builders.throttle_y` to a shape
+
+`@param shape function` the function of the shape to be throttled (Must have format function(x, y, world) where world is optional)  <br> `@param x_in int` width of tiles unaffected <br> `@param x_size int` total width of a single part of the throttled shape (affected tiles width equals `(x_size - x_in)/2`) <br> `@param y_in int` height of tiles unaffected <br> `@param y_size int` total height of a single part of the throttled shape (affected tiles height equals `(y_size - y_in)/2`)
+
+_Example_
+<br>
+Using a rectangle
+```lua
+-- creating the rectangle
+local rectangle = b.rectangle(20, 20)
+
+--applying throttle_y
+local shape = b.throttle_xy(rectangle, 2, 4, 2, 4)
+```
+
+Before throttle_xy (Water added for illustrational purposes, acts as false) <br>
+![image](https://user-images.githubusercontent.com/44922798/52725661-ee957580-2fb1-11e9-9339-4bcb1ea16bee.png) <br>
+After throttle_xy (Water added for illustrational purposes, acts as false) <br>
+![image](https://user-images.githubusercontent.com/44922798/52727002-9a3fc500-2fb4-11e9-979f-20e652c6df78.png)
 
 ## Builders.throttle_world_xy
+**TBC** <br>
+Almost equivalent to `Builders.throttle_xy` but preferred
 
 ## Builders.choose
+**TBC** <br>
+Given three shapes if first shape returns true apply true_shape if it returns false apply false_shape
 
 ## Builders.if_else
+Given two shapes if first shape returns false apply else_shape
 
 ## Builders.linear_grow
+
 
 ## Builders.grow
 
