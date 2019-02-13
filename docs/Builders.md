@@ -291,7 +291,7 @@ Using a L shape
 ```lua
 -- creating the L shape
 local pre_shape = b.translate(b.rectangle(16, 8), 4, 0)
-pre_shape = b.add(shape1, b.rotate(shape1), math.pi/2)
+pre_shape = b.add(pre_shape, b.rotate(pre_shape), math.pi/2)
 
 --applying flip_x
 local shape = b.flip_x(pre_shape)
@@ -315,7 +315,7 @@ Using a rectangle rotated shape
 ```lua
 -- creating the L shape
 local pre_shape = b.translate(b.rectangle(16, 8), 4, 0)
-pre_shape = b.add(shape1, b.rotate(shape1), math.pi/2)
+pre_shape = b.add(pre_shape, b.rotate(pre_shape), math.pi/2)
 
 --applying flip_y
 local shape = b.flip_y(pre_shape)
@@ -340,7 +340,7 @@ Using a rectangle rotated shape
 ```lua
 -- creating the L shape
 local pre_shape = b.translate(b.rectangle(16, 8), 4, 0)
-pre_shape = b.add(shape1, b.rotate(shape1), math.pi/2)
+pre_shape = b.add(pre_shape, b.rotate(pre_shape), math.pi/2)
 
 --applying flip_y
 local shape = b.flip_xy(pre_shape)
@@ -354,20 +354,138 @@ With flipping along xy (Water added for illustrational purposes) <br>
 ![image](https://user-images.githubusercontent.com/44922798/52719333-bbe58000-2fa5-11e9-92be-4eac6d76937f.png)
 
 ## Builders.any
-**TBC**
+Combines all shapes in supplied array as if it where evaluated as an _OR_ operation.
+If any shape returns true for a coordinate, the resulting shape returns true
+
+`@param shapes table of functions` table/array of all shapes to be combined (Must have format function(x, y, world) where world is optional) <br> `@see Builders.all for comparison`
+
+_Example_
+<br>
+Using 4 rectangles which have been rotated
+```lua
+-- creating the 4 shapes
+local shape1 = b.translate(b.rectangle(16, 8), 4, 0)
+local shape2 = b.rotate(shape1), math.pi/2)
+local shape3 = b.rotate(shape2), math.pi/2)
+local shape4 = b.rotate(shape3), math.pi/2)
+
+--Combining using any
+local shape = b.any({shape1, shape2, shape3, shape4})
+```
+
+
+Player is at position (0, 0) <br>
+Base shape (Water added for illustrational purposes) <br>
+![image](https://user-images.githubusercontent.com/44922798/52720893-c9e8d000-2fa8-11e9-97bb-77bcedd97ae9.png) <br>
+Resulting shape (Water added for illustrational purposes) <br>
+![image](https://user-images.githubusercontent.com/44922798/52720814-a6be2080-2fa8-11e9-97ed-f406eb7e57e3.png)
+
 
 ## Builders.all
-**TBC**
+Combines all shapes in supplied array as if it where evaluated as an _AND_ operation
+If, and only if, all shapes returns true for a coordinate, the resulting shape returns true.
+
+`@param shapes table of functions` table/array of all shapes to be combined (Must have format function(x, y, world) where world is optional) <br> `@see Bilders.any for comparison`
+
+_Example_
+<br>
+Using 4 rectangles which have been rotated
+```lua
+-- creating the 4 shapes
+local shape1 = b.translate(b.rectangle(16, 8), 4, 0)
+local shape2 = b.rotate(shape1), math.pi/2)
+local shape3 = b.rotate(shape2), math.pi/2)
+local shape4 = b.rotate(shape3), math.pi/2)
+
+--Combining using all
+local shape = b.all({shape1, shape2, shape3, shape4})
+```
+
+
+Player is at position (0, 0) <br>
+Base shape (Water added for illustrational purposes) <br>
+![image](https://user-images.githubusercontent.com/44922798/52720893-c9e8d000-2fa8-11e9-97bb-77bcedd97ae9.png) <br>
+(Water added for illustrational purposes) <br>
+![image](https://user-images.githubusercontent.com/44922798/52720992-01577c80-2fa9-11e9-9fea-9b5ff92f609d.png)
+
 
 ## Builders.combine
-**TBC**
+**TBC** <br>
+No map currently uses Builders.combine
+
+Expected behavior: <br>
+Works like Builders.any but keeps any entities that have been added to a shape. <br>
+Builders.any is using a lazy evaluation and thus terminates at first `true`. <br>
+
+Alternative usage:
+Use Builders.any and apply entities after using Builders.apply_entity or Builders.apply_entities
 
 ## Builders.add
-**TBC**
+Combines two shapes as if it where evaluated as an _OR_ operation.
+Equivalent to `Builders.any({shape1, shape2})`
+
+`@param shape1 function` the function of the first shape to be combined (Must have format function(x, y, world) where world is optional) <br> `@param shape2 function` the function of the second shape to be combined (Must have format function(x, y, world) where world is optional) <br> `@see Builders.any for comparison`
+
+_Example_
+<br>
+Using 2 rectangles to form an L shape
+```lua
+-- creating the L shape
+local shape1 = b.translate(b.rectangle(16, 8), 4, 0)
+local shape2 = b.rotate(shape1, math.pi/2)
+
+--applying flip_x
+local shape = b.add(shape1, shape2)
+```
+
+Result: (Water added for illustrational purposes) <br>
+![image](https://user-images.githubusercontent.com/44922798/52718975-f1d63480-2fa4-11e9-9018-3134b1954ade.png)
 
 ## Builders.subtract
+Subtracts a shape from the other.
+
+`@param shape function` the function of the shape to be subtracted from (Must have format function(x, y, world) where world is optional) <br> `@param minus_shape function` the function of the subtracting shape (Must have format function(x, y, world) where world is optional)
+
+_Example_
+<br>
+Using 2 rectangles
+```lua
+-- creating the 2 rectangles
+local shape1 = b.rectangle(10, 10)
+local shape2 = b.rectangle(5, 5)
+
+--applying subtract
+local shape = b.subtract(shape1, shape2)
+```
+
+Result: (Water added for illustrational purposes) <br>
+![image](https://user-images.githubusercontent.com/44922798/52724542-d4f32e80-2faf-11e9-8b99-2b8bc37b18f9.png)
 
 ## Builders.invert
+Inverts a shape (true becomes false and vice versa)
+
+`@param shape function` the function of the shape to be inverted (Must have format function(x, y, world) where world is optional) <br>
+
+_Example_
+<br>
+Using 2 rectangles subtracted (see Builders.subtract example)
+```lua
+-- creating the 2 rectangles
+local shape1 = b.rectangle(10, 10)
+local shape2 = b.rectangle(5, 5)
+
+--applying subtract
+local pre_shape = b.subtract(shape1, shape2)
+
+--applying invert
+local shape = b.invert(pre_shape)
+```
+
+Before inversion (Water added for illustrational purposes, acts as false) <br>
+![image](https://user-images.githubusercontent.com/44922798/52724542-d4f32e80-2faf-11e9-8b99-2b8bc37b18f9.png) <br>
+After inversion (Water added for illustrational purposes, acts as false) <br>
+![image](https://user-images.githubusercontent.com/44922798/52724967-9a3dc600-2fb0-11e9-8a47-d1c8912a72ca.png)
+
 
 ## Builders.throttle_x
 
