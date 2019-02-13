@@ -576,21 +576,50 @@ Given three shapes if first shape returns true apply true_shape if it returns fa
 Given two shapes if first shape returns false apply else_shape
 
 ## Builders.linear_grow
-
+**TBC** <br>
+No map currently uses `Builders.linear_grow`
 
 ## Builders.grow
+**TBC** <br>
+The hearts map uses `Builders.grow`
 
 ## Builders.project
+**TBC** <br>
 
 ## Builders.project_pattern
+**TBC** <br>
 
 ## Builders.project_overlap
+**TBC** <br>
 
 ## Builders.enitity
+Returns a table with one entry named `name` whose value is `@param name string` if the supplied shape returns true <br>
+Use case: Used to apply trees or rocks
+
+```lua
+local tree = b.entity(b.throttle_world_xy(b.rectangle(20, 10), 1, 3, 1, 3), 'tree-01')
+```
 
 ## Builders.entity_func
+Executes function `func` if the supplied shape returns true <br>
+Use case: Used to apply a random rock or tree instead of a static one.
+
+```lua
+local rock_names = {'rock-big', 'rock-huge', 'sand-rock-big'}
+local function rocks_func()
+    local rock = rock_names[math.random(#rock_names)]
+    return {name = rock}
+end
+
+local rocks = b.entity_func(b.throttle_world_xy(b.rectangle(20, 10), 1, 6, 1, 6), rocks_func)
+```
 
 ## Builders.resource
+**TBC**
+
+`@param shape function` <br> `@param resource_type string` <br> `@param amount_function function` <br> `@param always_place ???` ??? <br>
+
+
 
 ## Builders.apply_entity
 
