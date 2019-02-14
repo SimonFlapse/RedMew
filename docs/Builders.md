@@ -615,11 +615,59 @@ local rocks = b.entity_func(b.throttle_world_xy(b.rectangle(20, 10), 1, 6, 1, 6)
 ```
 
 ## Builders.resource
-**TBC**
+Fills a shape with a resource
 
-`@param shape function` <br> `@param resource_type string` <br> `@param amount_function function` <br> `@param always_place ???` ??? <br>
+`@param shape function` shape to fill with resource <br> `@param resource_type string` prototype name of resource. Available types listed below <br> `@param amount_function function --optional` function in the format function(x, y), if `nil` value is set to 404 <br> `@param always_place boolean --optional` overrides surface.can_place_entity check <br>
 
+Valid `resource_type`: <br>
+`iron-ore`, `copper-ore`, `stone`, `coal`, `uranium-ore`, `crude-oil`
 
+Effect of `always_place` <br>
+![image](https://user-images.githubusercontent.com/44922798/52802769-de989700-3080-11e9-8e34-ff0a48a9cfc9.png)
+
+_Example_
+<br>
+Simple resource generation using `Builders.manhattan_value`
+```lua
+-- creating a 100 x 100 square of land
+local shape = b.rectangle(100, 100)
+
+-- creating a circular shape with radius 10, to be filled with iron-ore
+local ore_shape = b.circle(10)
+
+-- creating the resource entity from the ore_shape using manhattan distance to increase ore count with distance from (0, 0)
+local iron_ore = b.resource(ore_shape), 'iron-ore', b.manhattan_value(500, 1), false) 
+
+-- applying resource entity to shape
+local map = b.apply_entity(shape, iron_ore)
+```
+
+_Example_
+<br>
+Advanced resource generation with amount function
+```lua
+-- creates value function that returns a fixed amount
+local function value(num)
+    return function(x, y) -- the parameter x and y can be omitted in this case
+        return num
+    end
+end
+
+-- creating a 100 x 100 square of land
+local shape = b.rectangle(100, 100)
+
+-- creating a circular shape with radius 10, to be filled with iron-ore
+local ore_shape = b.circle(10)
+
+-- creating the resource entity from the ore_shape using a custom value function
+local iron_ore = b.resource(ore_shape), 'iron-ore', value(500), false) 
+
+-- applying resource entity to shape
+local map = b.apply_entity(shape, iron_ore)
+```
+
+Other `amount_function`s: <br>
+`Builders.manhattan_value`, `Builders.euclidean_value`, `Builders.exponential_value`
 
 ## Builders.apply_entity
 
@@ -684,9 +732,43 @@ local rocks = b.entity_func(b.throttle_world_xy(b.rectangle(20, 10), 1, 6, 1, 6)
 ## Builders.apply_effect
 
 ## Builders.manhattan_value
+Returns the product of the manhattan distance of the current coordinates from origo and a multiplier. A base number is added to this value <br>
+Formula: `multiplier * (|x| + |y|) + base_value` <br>
+Laymans' term: the horizontal and vertical distances, between (0, 0) and a given point, added together <br>
+![image](https://user-images.githubusercontent.com/44922798/52806591-acd7fe00-3089-11e9-9862-c94803634545.png)<br>
+The red line is the manhattan distance between the two points. This distance is equivalent to the blue and yellow line. The green line is the euclidean distance.
+
+
+`@param base number` the base value or minimum value returned <br> `@param mult number` a number signifying the multiplication of the manhattan distance <br>
+
+_Example_
+<br>
+Usage of the manhattan_value
+```lua
+-- returns the base for all coordinates
+b.manhattan_value(500, 0) -- Always returns 500
+
+-- returns the base + manhattan distance
+b.manhattan_value(500, 1) -- Always returns >= 500 | eg. coordinate (10, 10) gives the manhattan distance of 20, resulting in the manhattan_value of 520.
+
+-- returns the base + mult(manhattan distance)
+b.manhattan_value(500, 2) -- Always returns >= 500 | eg. coordinate (10, 10) gives the manhattan distance of 20 (which needs to be multiplied by 2), resulting in the manhattan_value of 540
+```
 
 ## Builders.euclidean_value
+**TBC** <br>
+Return the product of the euclidean distance of the current coordinates from origo and a multiplier. A base number is added to this value <br>
+Formula: `multiplier * sqrt(x^2 + y^2) + base_value` <br>
+Laymans' term: the diagonal distance from point (0, 0) to a given coordinate <br>
+![image](https://user-images.githubusercontent.com/44922798/52806591-acd7fe00-3089-11e9-9862-c94803634545.png)<br>
+The red line is the manhattan distance between the two points. This distance is equivalent to the blue and yellow line. The green line is the euclidean distance.
+
+`@param base number` the base value or minimum value returned <br> `@param mult number` a number signifying the multiplication of the euclidean distance <br>
 
 ## Builders.exponential_value
+**TBC** <br>
+Formula: `base_value + multiplier * (x^2 + y^2)^(exponent/2)`
+
+`@param base number` the base value or minimum value returned <br> `@param mult number` a number signifying the multiplication of the exponential value <br> `@param pow number` <br>
 
 ## Builders.prepare_weighted_array
