@@ -1,5 +1,8 @@
 # [Work in progress] Guide on using the map_gen/shared/builders
 Currently our builders module contains 83 functions assisting our map creation. This wiki entry strives to document the usage of these.
+
+This guide might not be enough information, but it sure beats no information at all. If you need any assistance please visit www.redmew.com/discord we'll be happy to assist in #devtalk or #mapgen
+
 ## Basic map generation
 Basic map generation using our map_gen/shared/generate module consists of the usage of functions returning true or false for a given coordinate. Notice that factorios map generation works before the scenarios', the true or false only determines whether to keep the current map or remove it entirely, leaving void in its place.
 
@@ -39,6 +42,25 @@ Useful for testing:
 /c local x = 256 game.forces.player.chart(game.player.surface, {lefttop = {x = -x, y = -x}, rightbottom = {x = x, y = x}})
 ```
 The generate module works after the charting has been executed! Wait a while for it to apply
+
+# Getting started
+Go take a look at https://github.com/Refactorio/RedMew/wiki/Creating-a-new-map
+
+Getting started with the builder you need to understand how to create a new map. Take this example:
+```lua
+local b = require 'map_gen.shared.builders'
+
+local map = b.rectangle(200, 200)
+
+return map
+```
+It creates a 200 x 200 square of land and the rest of the map is void.
+
+The important part of this is that a new map should always return a function that takes the following parameters: <br>
+`@param x number` x-coordinate <br> `@param y number` y-coordinate <br> `@param world table` containing a `x` and `y` coordinate for the world (Not affected by any manipulation) <br>
+Using the builders functions will always return a function that satisfies this.
+
+In the function section you'll notice the use of the variables shape and map. They are interchangeable and affects nothing. Best pratice is to combine shapes and then add any entites to a function called `map` before returning it.
 
 # Functions
 
@@ -688,6 +710,29 @@ Other `amount_function`s: <br>
 ## Builders.grid_y_pattern
 
 ## Builders.grid_pattern
+**TBC**
+
+_Example_
+<br>
+```lua
+local b = require 'map_gen.shared.builders'
+
+local water = b.tile('water')
+local normal = b.full_shape
+
+local pattern = {
+    {normal, water},
+    {normal, normal}
+}
+
+local map = b.grid_pattern(pattern, 2, 2, 1, 1)
+map = b.scale(map, 32, 32)
+
+return map
+```
+
+![image](https://user-images.githubusercontent.com/44922798/52890536-88f9e280-3185-11e9-9764-1912f866d8c1.png)
+
 
 ## Builders.grid_pattern_overlap
 
