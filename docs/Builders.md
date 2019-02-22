@@ -11,46 +11,10 @@ This guide might not be enough information, but it sure beats no information at 
 * [Getting Started](#getting_started)
 * [Functions](#functions)
   * [Notes](#notes)  
-  * **Shape creation**  
-    * [Rectangle](#buildersrectangle)
-    * [Line x](#buildersline_x)
-    * [Line y](#buildersline_y)
-    * [Square Diamond](#builderssquare_diamond)
-    * [Rectangle Diamond](#buildersrectangle_diamond)
-    * [Circle](#builderscircle)
-    * [Oval](#buildersoval)
-    * [Sine wave fill](#builderssine_fill)
-    * [Sine wave](#builderssine_wave)
-    * [Rectangular spiral](#buildersrectangular_spiral)
-    * [Circular spiral](#builderscircular_spiral)
-    * [Circular growing spiral](#builderscircular_spiral_grow)
-    * [Circular spiral with n threads](#builderscircular_spiral_n_threads)
-    * [Circular growing spiral with n threads](#builderscircular_spiral_grow_n_threads) 
-  * **Shape manipulation**  
-    * [Translate](#builderstranslate)
-    * [Scale](#buildersscale)
-    * [Rotate](#buildersrotate)
-    * [Flip along x](#buildersflip_x)
-    * [Flip along y](#buildersflip_y)
-    * [Flip both x and y](#buildersflip_xy)
-    * [Combine Any](#buildersany)
-    * [Combine All](#buildersall)
-    * [~~Combine~~](#builderscombine)
-    * [Add](#buildersadd)
-    * [Subtract](#builderssubtract)
-    * [Invert](#buildersinvert)
-    * [Throttle along x](#buildersthrottle_x)
-    * [Throttle along y](#buildersthrottle_y)
-    * [Throttle along x and y](#buildersthrottle_xy)
-    * [Throttle along world.x and world.y](#buildersthrottle_world_xy)
-    * [Choose](#builderschoose)
-    * [If else](#buildersif_else)  
-  * **Entity creation**  
-    * [Entity](#buildersentity)
-    * [Entity function](#buildersentity_func)
-    * [Resource](#buildersresource)  
-  * **Grid creation**  
-    * [Grid pattern](#buildersgrid_pattern)  
+  * [Shape creation](#shape_creation)
+  * [Shape manipulation](#shape_manipulation) 
+  * [Entity creation](#entity_creation) 
+  * [Patterns](#patterns) 
   * **Helper functions**  
     * [Manhattan value](#buildersmanhattan_value)
     * [Euclidean value](#builderseuclidean_value)
@@ -122,6 +86,25 @@ Every shape is a function with the format function(x, y, world), during map gene
 
 Another usage of `world` is when manipulating a shape (eg. by translation) this changes the x and y coordinates while `world.x` and `world.y` will return the true coordinates
 
+## Shape creation
+| Function  | Description |
+| ------------- | ------------- |
+| [Rectangle](#buildersrectangle)  | Creates a rectangular shape  |
+| [Line x](#buildersline_x)  | Creates a infinite vertical line  |
+| [Line y](#buildersline_y)  | Creates a infinite horizontal line |
+| [Path](#builderspath) | Creates an infinite cross |
+| [Square Diamond](#builderssquare_diamond) | Creates a square diamond |
+| [Rectangle Diamond](#buildersrectangle_diamond) | Creates a rectangular diamond | 
+| [Circle](#builderscircle) | Creates a circle |
+| [Oval](#buildersoval) | Creates an oval |
+| [Sine wave fill](#builderssine_fill) | Creates a sine wave and fills the gaps |
+| [Sine wave](#builderssine_wave) | Creates a sine wave with a thickness |
+| [Rectangular spiral](#buildersrectangular_spiral) | Creates an infinite rectangular spiral |
+| [Circular spiral](#builderscircular_spiral) | Creates an infinite circular spiral |
+| [Circular growing spiral](#builderscircular_spiral_grow) | Creates an infinite growing circular spiral |
+| [Circular spiral with n threads](#builderscircular_spiral_n_threads) | Creates a number of threads of infinite circular spirals |
+| [Circular growing spiral with n threads](#builderscircular_spiral_grow_n_threads) | Creates a number of infinite growing circular spirals |
+
 ## Builders.rectangle
 Creates a rectangular shape
 
@@ -155,11 +138,26 @@ Creates a infinite horizontal line
 
 _Example_
 ```lua
-local square = b.line_y(10)
+local shape = b.line_y(10)
 ```
 
 
 ![image](https://user-images.githubusercontent.com/44922798/52701076-a9555180-2f79-11e9-9abf-f4a65d9cb7bd.png)
+
+## Builders.path
+Creates a infinite cross
+Equivalent to combining `line_x` and `line_y`
+
+`@param tickness int` width of the vertical line <br> `@param optional_thickness_height int --optional` width of the horizontal line <br>
+
+_Example_
+```lua
+local shape = b.path(10, 5)
+```
+
+
+![image](https://user-images.githubusercontent.com/44922798/53253636-02cc2780-36c2-11e9-92fa-af8035bdc194.png)
+
 
 ## Builders.square_diamond
 Creates a diamond where width is equal to height <br>
@@ -304,6 +302,34 @@ local shape = b.circular_spiral_grow_n_threads(5, 10, 50, 2)
 
 ## Builders.picture
 **TBC**
+
+## Shape manipulation
+
+| Function  | Description |
+| ------------- | ------------- |
+| [Translate](#builderstranslate) | Translates a shapes position |
+| [Scale](#buildersscale) | Scales a shapes |
+| [Rotate](#buildersrotate) | Rotates a shape counter clockwise |
+| [Flip along x](#buildersflip_x) | Flips a shape along the x-axis |
+| [Flip along y](#buildersflip_y) | Flips a shape along the y-axis |
+| [Flip both x and y](#buildersflip_xy) | Flips a shape along the xy-axis |
+| [Combine Any](#buildersany) | **OR** combine |
+| [Combine All](#buildersall) | **AND** combine |
+| [~~Combine~~](#builderscombine) | _Unused_ : _No Docs_ |
+| [Add](#buildersadd) | **OR** combine. _Only two shapes_ |
+| [Subtract](#builderssubtract) | Subtracts a shape from the other. |
+| [Invert](#buildersinvert) | Inverts a shape |
+| [Throttle along x](#buildersthrottle_x) | Cuts horizontal lines in a shape |
+| [Throttle along y](#buildersthrottle_y) | Cuts vertical lines in a shape |
+| [Throttle along x and y](#buildersthrottle_xy) | Applies `Builders.throttle_x` and `Builders.throttle_y` to a shape |
+| [Throttle along world.x and world.y](#buildersthrottle_world_xy) | Preferred over `Builders.throttle_xy` |
+| [Choose](#builderschoose) | Applying one of two shapes based on output of another shape |
+| [If else](#buildersif_else)   | Applying one shape based on the output of another shape |
+| [Linear grow](#builderslinear_grow)   | _No Docs_ |
+| [Grow](#buildersgrow)   |  _No Docs_ |
+| [Project](#buildersproject)   |  _No Docs_ |
+| [Project pattern](#buildersproject_pattern)   |  _No Docs_ |
+| [Project overlap](#buildersproject_overlap)   |  _No Docs_ |
 
 ## Builders.translate
 Translates a shapes position
@@ -667,6 +693,16 @@ The hearts map uses `Builders.grow`
 ## Builders.project_overlap
 **TBC** <br>
 
+## Entity creation
+| Function  | Description |
+| ------------- | ------------- |
+| [Entity](#buildersentity) | Applying a single entity |
+| [Entity_function](#buildersentity_func) | Applying entities based on a custom function |
+| [Resource](#buildersresource) | Fills a shape with a resource |
+| [Apply entity](#buildersapply_entity)   |  _No Docs_ |
+| [Apply entities](#buildersapply_entities)   |  _No Docs_ |
+
+
 ## Builders.entity
 Returns a table with one entry named `name` whose value is `@param name string` if the supplied shape returns true <br>
 Use case: Used to apply trees or rocks
@@ -747,6 +783,20 @@ Other `amount_function`s: <br>
 ## Builders.apply_entity
 
 ## Builders.apply_entities
+
+## Patterns
+| Function  | Description |
+| ------------- | ------------- |
+| [Single pattern](#builderssingle_pattern)   |  _No Docs_ |
+| [Single pattern overlap](#builderssingle_pattern_overlap)   |  _No Docs_ |
+| [Single x pattern](#builderssingle_x_pattern)   |  _No Docs_ |
+| [Single y pattern](#builderssingle_y_pattern)   |  _No Docs_ |
+| [Single grid pattern](#builderssingle_grid_pattern)   |  _No Docs_ |
+| [Grid x pattern](#buildersgrid_x_pattern)   |  _No Docs_ |
+| [Grid y pattern](#buildersgrid_y_pattern)   |  _No Docs_ |
+| [Grid pattern](#buildersgrid_pattern)   |  _No Docs_ |
+
+
 
 ## Builders.single_pattern
 
