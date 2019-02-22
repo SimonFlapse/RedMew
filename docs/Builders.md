@@ -1,7 +1,60 @@
+This wiki entry is under construction.
+
 # [Work in progress] Guide on using the map_gen/shared/builders
 Currently our builders module contains 83 functions assisting our map creation. This wiki entry strives to document the usage of these.
 
 This guide might not be enough information, but it sure beats no information at all. If you need any assistance please visit www.redmew.com/discord we'll be happy to assist in #devtalk or #mapgen
+
+
+**TABLE OF CONTENT**
+* [Basic map generation](#basic_map_generation)
+* [Getting Started](#getting_started)
+* [Functions](#functions)
+  * [Notes](#notes)  
+  * **Shape creation**  
+    * [Rectangle](#buildersrectangle)
+    * [Line x](#buildersline_x)
+    * [Line y](#buildersline_y)
+    * [Square Diamond](#builderssquare_diamond)
+    * [Rectangle Diamond](#buildersrectangle_diamond)
+    * [Circle](#builderscircle)
+    * [Oval](#buildersoval)
+    * [Sine wave fill](#builderssine_fill)
+    * [Sine wave](#builderssine_wave)
+    * [Rectangular spiral](#buildersrectangular_spiral)
+    * [Circular spiral](#builderscircular_spiral)
+    * [Circular growing spiral](#builderscircular_spiral_grow)
+    * [Circular spiral with n threads](#builderscircular_spiral_n_threads)
+    * [Circular growing spiral with n threads](#builderscircular_spiral_grow_n_threads) 
+  * **Shape manipulation**  
+    * [Translate](#builderstranslate)
+    * [Scale](#buildersscale)
+    * [Rotate](#buildersrotate)
+    * [Flip along x](#buildersflip_x)
+    * [Flip along y](#buildersflip_y)
+    * [Flip both x and y](#buildersflip_xy)
+    * [Combine Any](#buildersany)
+    * [Combine All](#buildersall)
+    * [~~Combine~~](#builderscombine)
+    * [Add](#buildersadd)
+    * [Subtract](#builderssubtract)
+    * [Invert](#buildersinvert)
+    * [Throttle along x](#buildersthrottle_x)
+    * [Throttle along y](#buildersthrottle_y)
+    * [Throttle along x and y](#buildersthrottle_xy)
+    * [Throttle along world.x and world.y](#buildersthrottle_world_xy)
+    * [Choose](#builderschoose)
+    * [If else](#buildersif_else)  
+  * **Entity creation**  
+    * [Entity](#buildersentity)
+    * [Entity function](#buildersentity_func)
+    * [Resource](#buildersresource)  
+  * **Grid creation**  
+    * [Grid pattern](#buildersgrid_pattern)  
+  * **Helper functions**  
+    * [Manhattan value](#buildersmanhattan_value)
+    * [Euclidean value](#builderseuclidean_value)
+    * [Exponential value](#buildersexponential_value)
 
 ## Basic map generation
 Basic map generation using our map_gen/shared/generate module consists of the usage of functions returning true or false for a given coordinate. Notice that factorios map generation works before the scenarios', the true or false only determines whether to keep the current map or remove it entirely, leaving void in its place.
@@ -412,7 +465,7 @@ Resulting shape (Water added for illustrational purposes) <br>
 Combines all shapes in supplied array as if it where evaluated as an _AND_ operation
 If, and only if, all shapes returns true for a coordinate, the resulting shape returns true.
 
-`@param shapes table of functions` table/array of all shapes to be combined (Must have format function(x, y, world) where world is optional) <br> `@see Bilders.any for comparison`
+`@param shapes table of functions` table/array of all shapes to be combined (Must have format function(x, y, world) where world is optional) <br> `@see Builders.any for comparison`
 
 _Example_
 <br>
@@ -614,7 +667,7 @@ The hearts map uses `Builders.grow`
 ## Builders.project_overlap
 **TBC** <br>
 
-## Builders.enitity
+## Builders.entity
 Returns a table with one entry named `name` whose value is `@param name string` if the supplied shape returns true <br>
 Use case: Used to apply trees or rocks
 
