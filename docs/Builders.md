@@ -6,7 +6,7 @@ Currently our builders module contains 83 functions assisting our map creation. 
 This guide might not be enough information, but it sure beats no information at all. If you need any assistance please visit www.redmew.com/discord we'll be happy to assist in #devtalk or #mapgen
 
 
-**TABLE OF CONTENT**
+#### TABLE OF CONTENT
 * [Basic map generation](#basic-map-generation)
 * [Getting Started](#getting-started)
 * [Functions](#functions)
@@ -22,6 +22,9 @@ This guide might not be enough information, but it sure beats no information at 
 
 ## Basic map generation
 Basic map generation using our map_gen/shared/generate module consists of the usage of functions returning true or false for a given coordinate. Notice that factorios map generation works before the scenarios', the true or false only determines whether to keep the current map or remove it entirely, leaving void in its place.
+
+<a href="#table-of-content"><img src="https://user-images.githubusercontent.com/44922798/53288774-011b6600-378d-11e9-86d1-277d7b213d14.png" height="16" ></a>
+[**Go to top**](#table-of-content) <br>
 
 ***
 **Example 1.1 (20 x 20 square)**
@@ -65,6 +68,7 @@ Useful for testing:
 The generate module works after the charting has been executed! Wait a while for it to apply
 
 # Getting started
+
 Go take a look at https://github.com/Refactorio/RedMew/wiki/Creating-a-new-map
 
 Getting started with the builder you need to understand how to create a new map. Take this example:
@@ -82,6 +86,9 @@ The important part of this is that a new map should always return a function tha
 Using the builders functions will always return a function that satisfies this.
 
 In the function section you'll notice the use of the variables shape and map. They are interchangeable and affects nothing. Best pratice is to combine shapes and then add any entites to a function called `map` before returning it.
+
+<a href="#table-of-content"><img src="https://user-images.githubusercontent.com/44922798/53288774-011b6600-378d-11e9-86d1-277d7b213d14.png" height="16" ></a>
+[**Go to top**](#table-of-content) <br>
 
 # Functions
 
@@ -108,6 +115,9 @@ Another usage of `world` is when manipulating a shape (eg. by translation) this 
 | [Circular growing spiral](#builderscircular_spiral_grow) | Creates an infinite growing circular spiral |
 | [Circular spiral with n threads](#builderscircular_spiral_n_threads) | Creates a number of threads of infinite circular spirals |
 | [Circular growing spiral with n threads](#builderscircular_spiral_grow_n_threads) | Creates a number of infinite growing circular spirals |
+
+<a href="#table-of-content"><img src="https://user-images.githubusercontent.com/44922798/53288774-011b6600-378d-11e9-86d1-277d7b213d14.png" height="16" ></a>
+[**Go to top**](#table-of-content) <br>
 
 ## Builders.rectangle
 Creates a rectangular shape
@@ -334,6 +344,9 @@ local shape = b.circular_spiral_grow_n_threads(5, 10, 50, 2)
 | [Project](#buildersproject)   |  _No Docs_ |
 | [Project pattern](#buildersproject_pattern)   |  _No Docs_ |
 | [Project overlap](#buildersproject_overlap)   |  _No Docs_ |
+
+<a href="#table-of-content"><img src="https://user-images.githubusercontent.com/44922798/53288774-011b6600-378d-11e9-86d1-277d7b213d14.png" height="16" ></a>
+[**Go to top**](#table-of-content) <br>
 
 ## Builders.translate
 Translates a shapes position
@@ -706,6 +719,8 @@ The hearts map uses `Builders.grow`
 | [Apply entity](#buildersapply_entity)   |  _No Docs_ |
 | [Apply entities](#buildersapply_entities)   |  _No Docs_ |
 
+<a href="#table-of-content"><img src="https://user-images.githubusercontent.com/44922798/53288774-011b6600-378d-11e9-86d1-277d7b213d14.png" height="16" ></a>
+[**Go to top**](#table-of-content) <br>
 
 ## Builders.entity
 Returns a table with one entry named `name` whose value is `@param name string` if the supplied shape returns true <br>
@@ -801,7 +816,8 @@ Other `amount_function`s: <br>
 | [Grid y pattern](#buildersgrid_y_pattern)   |  _No Docs_ |
 | [Grid pattern](#buildersgrid_pattern)   |  _No Docs_ |
 
-
+<a href="#table-of-content"><img src="https://user-images.githubusercontent.com/44922798/53288774-011b6600-378d-11e9-86d1-277d7b213d14.png" height="16" ></a>
+[**Go to top**](#table-of-content) <br>
 
 ## Builders.single_pattern
 Applies a single shape infinite <br>
@@ -928,6 +944,8 @@ local pattern = {
 |**4**| shape2 | shape1 | shape2 | shape1 |
 |**5**| shape1 | shape2 | shape1 | shape2 |
 
+<a href="#table-of-content"><img src="https://user-images.githubusercontent.com/44922798/53288774-011b6600-378d-11e9-86d1-277d7b213d14.png" height="16" ></a>
+[**Go to top**](#table-of-content) <br>
 
 ## Builders.grid_x_pattern
 
@@ -1041,3 +1059,6 @@ Formula: `base_value + multiplier * (x^2 + y^2)^(exponent/2)`
 `@param base number` the base value or minimum value returned <br> `@param mult number` a number signifying the multiplication of the exponential value <br> `@param pow number` <br>
 
 ## Builders.prepare_weighted_array
+
+<a href="#table-of-content"><img src="https://user-images.githubusercontent.com/44922798/53288774-011b6600-378d-11e9-86d1-277d7b213d14.png" height="16" ></a>
+[**Go to top**](#table-of-content) <br>
