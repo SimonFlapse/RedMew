@@ -57,6 +57,10 @@ return shape
 Useful for testing:
 ```lua
 /c local x = 256 game.forces.player.chart(game.player.surface, {lefttop = {x = -x, y = -x}, rightbottom = {x = x, y = x}})
+--and
+/c global.task_queue_speed = 10 --Threaded work
+--or
+/c game.speed = 3 --Non-threaded work
 ```
 The generate module works after the charting has been executed! Wait a while for it to apply
 
@@ -799,14 +803,130 @@ Other `amount_function`s: <br>
 
 
 ## Builders.single_pattern
+Applies a single shape infinite <br>
+
+`@param shape function` the function of a shape to be duplicated in a pattern (Must have format function(x, y, world) where world is optional) <br> `@param width int` width of one unit of the base shape <br> `@param height int --optional` height of one unit of the base shape. If `nil` it equals to width
+
+_Example_
+Using a square
+```lua
+local shape = b.rectangle(10, 10)
+local map = b.single_pattern(shape, 15, 15)
+```
+
+Since the shape's dimentions are 10 by 10 and the base pattern is 15 by 15 we end up with some void.
+
+![image](https://user-images.githubusercontent.com/44922798/53287494-31f39f00-377d-11e9-9208-a79d0401f444.png)
 
 ## Builders.single_pattern_overlap
+Applies a single shape infinite while allowing overlaps <br>
+
+`@param shape function` the function of a shape to be duplicated in a pattern (Must have format function(x, y, world) where world is optional) <br> `@param width int` width of one unit of the base shape <br> `@param height int` height of one unit of the base shape <br> `@see Builders.single_pattern` for comparison
+
+_Example_ (Better example wanted!)
+Using an L-shape
+```lua
+local pre_shape = b.translate(b.rectangle(16, 8), 4, 0)
+local shape = b.add(pre_shape, b.rotate(pre_shape, math.pi/2))
+
+local map = b.single_pattern_overlap(shape, 25, 12)
+```
+
+With overlap
+![image](https://user-images.githubusercontent.com/44922798/53287992-7f730a80-3783-11e9-8906-9b13278e4eca.png)
+
+Without overlap
+![image](https://user-images.githubusercontent.com/44922798/53287994-8dc12680-3783-11e9-9a27-22e962027219.png)
+
 
 ## Builders.single_x_pattern
+Applies a single shape infinite along the x-axis <br>
+
+`@param shape function` the function of a shape to be duplicated in a pattern (Must have format function(x, y, world) where world is optional) <br> `@param width int` width of one unit of the base shape <br> `@see Builders.single_pattern` for comparison
+
+_Example_
+Using a square
+```lua
+local shape = b.rectangle(10, 10)
+local map = b.single_x_pattern(shape, 11)
+```
+
+Since the shape's dimentions are 10 by 10 and the base pattern is 11 by 11 we end up with some void.
+
+![image](https://user-images.githubusercontent.com/44922798/53288040-2f487800-3784-11e9-8dfb-b522bb711251.png)
+
 
 ## Builders.single_y_pattern
+Applies a single shape infinite along the y-axis <br>
+
+`@param shape function` the function of a shape to be duplicated in a pattern (Must have format function(x, y, world) where world is optional) <br> `@param height int` height of one unit of the base shape <br> `@see Builders.single_pattern` for comparison
+
+_Example_
+Using a square
+```lua
+local shape = b.rectangle(10, 10)
+local map = b.single_y_pattern(shape, 11)
+```
+
+Since the shape's dimentions are 10 by 10 and the base pattern is 11 by 11 we end up with some void.
+
+![image](https://user-images.githubusercontent.com/44922798/53288074-a3831b80-3784-11e9-8094-a5faee7b4252.png)
 
 ## Builders.single_grid_pattern
+**Depricated** <br>
+Do not use, will be removed <br>
+Equivalent to `Builders.single_pattern` except:
+
+**Must specify both width and height parameters**
+
+## Pattern building
+The grid functions requires a new type of input a pattern. This pattern is a table containing the shapes in a grid like structure.
+
+_Example_
+Single row with three colomns
+```lua
+local pattern = {
+    {shape1, shape2, shape3}
+}
+```
+| | 1 | 2 | 3 |
+| ------------- | ------------- | ------------- | ------------- |
+|**1**| shape1 | shape2 | shape3 |
+
+_Example_
+Two row with two colomns
+```lua
+local pattern = {
+    {shape1, shape2},
+    {shape2, shape1}
+}
+```
+| | 1 | 2 |
+| ------------- | ------------- | ------------- |
+|**1**| shape1 | shape2 |
+|**2**| shape2 | shape1 |
+
+You can build the patterns just as you'd like, each row is a new table inside the pattern table, and each column is a new value inside the nested table. For structual purposes it's advised to have a consistent amount of rows and colomns, like all of these examples.
+
+_Example_
+Five row with four colomns
+```lua
+local pattern = {
+    {shape1, shape2, shape1, shape2},
+    {shape2, shape1, shape2, shape1},
+    {shape1, shape2, shape1, shape2},
+    {shape2, shape1, shape2, shape1},
+    {shape1, shape2, shape1, shape2}
+}
+```
+| | 1 | 2 | 3 | 4 |
+| ------------- | ------------- | ------------- | ------------- | ------------- |
+|**1**| shape1 | shape2 | shape1 | shape2 |
+|**2**| shape2 | shape1 | shape2 | shape1 |
+|**3**| shape1 | shape2 | shape1 | shape2 |
+|**4**| shape2 | shape1 | shape2 | shape1 |
+|**5**| shape1 | shape2 | shape1 | shape2 |
+
 
 ## Builders.grid_x_pattern
 
