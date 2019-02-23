@@ -7,13 +7,13 @@ This guide might not be enough information, but it sure beats no information at 
 
 
 **TABLE OF CONTENT**
-* [Basic map generation](#basic_map_generation)
-* [Getting Started](#getting_started)
+* [Basic map generation](#basic-map-generation)
+* [Getting Started](#getting-started)
 * [Functions](#functions)
   * [Notes](#notes)  
-  * [Shape creation](#shape_creation)
-  * [Shape manipulation](#shape_manipulation) 
-  * [Entity creation](#entity_creation) 
+  * [Shape creation](#shape-creation)
+  * [Shape manipulation](#shape-manipulation) 
+  * [Entity creation](#entity-creation) 
   * [Patterns](#patterns) 
   * **Helper functions**  
     * [Manhattan value](#buildersmanhattan_value)
@@ -791,11 +791,12 @@ Other `amount_function`s: <br>
 ## Patterns
 | Function  | Description |
 | ------------- | ------------- |
-| [Single pattern](#builderssingle_pattern)   |  _No Docs_ |
-| [Single pattern overlap](#builderssingle_pattern_overlap)   |  _No Docs_ |
-| [Single x pattern](#builderssingle_x_pattern)   |  _No Docs_ |
-| [Single y pattern](#builderssingle_y_pattern)   |  _No Docs_ |
-| [Single grid pattern](#builderssingle_grid_pattern)   |  _No Docs_ |
+| [Single pattern](#builderssingle_pattern)   |  Applies a single shape infinite |
+| [Single pattern overlap](#builderssingle_pattern_overlap)   |  Applies a single shape infinite while allowing overlaps |
+| [Single x pattern](#builderssingle_x_pattern)   |  Applies a single shape infinite along the x-axis |
+| [Single y pattern](#builderssingle_y_pattern)   |  Applies a single shape infinite along the y-axis |
+| [~~Single grid pattern~~](#builderssingle_grid_pattern)   |  **Depricated** _No Docs_ |
+| [Pattern building](#pattern-building) | How to create shape patterns |
 | [Grid x pattern](#buildersgrid_x_pattern)   |  _No Docs_ |
 | [Grid y pattern](#buildersgrid_y_pattern)   |  _No Docs_ |
 | [Grid pattern](#buildersgrid_pattern)   |  _No Docs_ |
