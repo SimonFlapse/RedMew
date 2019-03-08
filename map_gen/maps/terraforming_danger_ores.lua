@@ -73,7 +73,7 @@ Global.register_init(
         local s = RS.get_surface()
         tbl.seed = s.map_gen_settings.seed
         tbl.surface = s
-        game.difficulty_settings.technology_price_multiplier = 50
+        game.difficulty_settings.technology_price_multiplier = 25
         game.forces.player.technologies.logistics.researched = true
         game.forces.player.technologies.automation.researched = true
     end,

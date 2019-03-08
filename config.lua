@@ -340,11 +340,11 @@ global.config = {
     },
     -- increases technology price multiplier with number of connected players
     research_scaling = {
-        enabled = false,
+        enabled = true,
         -- the increase in the multiplier with every player
-        scale_value = 0.05,
+        scale_value = 0.5,
         -- max increase in research price multiplier (-1 for disabled)
-        limit = -1
+        limit = 80
     }
 }
 
