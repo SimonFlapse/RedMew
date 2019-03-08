@@ -29,6 +29,108 @@ RS.set_map_gen_settings(
     }
 )
 
+--Start of compilatron-code
+
+local Task = require 'utils.task'
+local Token = require 'utils.token'
+
+local compilatrons = {}
+local current_messages = {}
+
+local messages = {
+    ['spawn'] = {
+        'Welcome to Redmew - Danger Ores\nThis map is sprinkled with ores\n\nResearch is increasing with the number of online players',
+        'Have you been silenced?\nMost players can chat using the key below ESC\n\nYou can change this in Settings -> Controls -> Toggle Lua console',
+        'Trouble placing items?\nThe ores are dangerous to most of our equipment\n\nYou can only use belts, power poles and miners on ores',
+        'Spare some change?\nGo spend your hard-earned coins here at the market',
+        'Feeling claustrophobic?\nI don\'t because I am a cute robot\n\nUse pollution to terraform this planet and gain access\nto more ores and land',
+        'Watch out!\nBiters and spitters like to sleep in the darkness!',
+        'Please stop hurting me!\nYou cannot kill me'
+    }
+}
+
+local callback =
+    Token.register(
+    function(data)
+        local ent = data.ent
+        local name = data.name
+        local msg_number = data.msg_number
+        local message =
+            ent.surface.create_entity(
+            {name = 'compi-speech-bubble', text = messages[name][msg_number], position = {0, 0}, source = ent}
+        )
+        current_messages[name] = {message = message, msg_number = msg_number}
+    end
+)
+
+Global.register(
+    {
+        compilatrons = compilatrons,
+        current_messages = current_messages
+    },
+    function(tbl)
+        compilatrons = tbl.compilatrons
+        current_messages = tbl.current_messages
+    end
+)
+
+local function circle_messages()
+    for name, ent in pairs(compilatrons) do
+        local current_message = current_messages[name]
+        local msg_number
+        local message
+        if current_message ~= nil then
+            message = current_message.message
+            if message ~= nil then
+                message.destroy()
+            end
+            msg_number = current_message.msg_number
+            msg_number = (msg_number < #messages[name]) and msg_number + 1 or 1
+        else
+            msg_number = 1
+        end
+        Task.set_timeout_in_ticks(300, callback, {ent = ent, name = name, msg_number = msg_number})
+    end
+end
+
+Event.on_nth_tick(899 * 2, circle_messages)
+
+local function add_compilatron(entity, name)
+    if not entity and not entity.valid then
+        return
+    end
+    if name == nil then
+        return
+    end
+    compilatrons[name] = entity
+    local message =
+        entity.surface.create_entity(
+        {name = 'compi-speech-bubble', text = messages[name][1], position = {0, 0}, source = entity}
+    )
+    current_messages[name] = {message = message, msg_number = 1}
+end
+
+local callback_token
+local callback_spawn
+
+local function spawn_compilatron()
+    local pos = game.surfaces[2].find_non_colliding_position('compilatron', {-0.5, -0.5}, 1.5, 0.5)
+    local compi = game.surfaces[2].create_entity {name = 'compilatron', position = pos, force = game.forces.neutral}
+    add_compilatron(compi, 'spawn')
+end
+
+local function chunk_generated()
+    Event.remove_removable(defines.events.on_chunk_generated, callback_token)
+    Task.set_timeout_in_ticks(300, callback_spawn)
+end
+
+callback_token = Token.register(chunk_generated)
+callback_spawn = Token.register(spawn_compilatron)
+
+Event.add_removable(defines.events.on_chunk_generated, callback_token)
+
+--End of compilatron-code
+
 local perlin_noise = Perlin.noise
 local fast_remove = table.fast_remove
 
