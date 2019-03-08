@@ -337,6 +337,14 @@ global.config = {
     -- gradually informs players of features such as chat, toasts, etc.
     player_onboarding = {
         enabled = true
+    },
+    -- increases technology price multiplier with number of connected players
+    research_scaling = {
+        enabled = false,
+        -- the increase in the multiplier with every player
+        scale_value = 0.05,
+        -- max increase in research price multiplier (-1 for disabled)
+        limit = -1
     }
 }
 
