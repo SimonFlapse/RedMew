@@ -64,21 +64,21 @@ local gain_xp_color = Color.light_sky_blue
 local lose_xp_color = Color.red
 local unlocked_color = Color.black
 local locked_color = Color.gray
-local table_column_layout = {type = 'table', column_count = 2}
+local table_column_layout = {type = 'table', column_count = 3}
 
-local level_up_formula = (function (level_reached)
+local level_up_formula = (function(level_reached)
     local difficulty_scale = floor(config.difficulty_scale)
     local level_fine_tune = floor(config.xp_fine_tune)
     local start_value = (floor(config.first_lvl_xp))
     local precision = (floor(config.cost_precision))
     local function formula(level)
         return (floor(
-            (1.15 ^ (level * 0.1))
-            + difficulty_scale * (level) ^ 3
-            + level_fine_tune * (level) ^ 2
-            + start_value * (level)
-            - difficulty_scale * (level)
-            - level_fine_tune * (level))
+                (1.15 ^ (level * 0.1))
+                        + difficulty_scale * (level) ^ 3
+                        + level_fine_tune * (level) ^ 2
+                        + start_value * (level)
+                        - difficulty_scale * (level)
+                        - level_fine_tune * (level))
         )
     end
     local value = formula(level_reached + 1)
@@ -100,9 +100,9 @@ local function calculate_level_xp(level)
     if level_table[level] == nil then
         local value
         if level == 1 then
-            value = level_up_formula(level-1)
+            value = level_up_formula(level - 1)
         else
-            value = level_up_formula(level-1)+calculate_level_xp(level-1)
+            value = level_up_formula(level - 1) + calculate_level_xp(level - 1)
         end
         insert(level_table, level, value)
     end
@@ -112,7 +112,7 @@ end
 ---@param level number a number specifying the current level
 ---@return number a percentage of the required experience to level up from one level to the other
 local function percentage_of_level_req(level, percentage)
-    return level_up_formula(level)*percentage
+    return level_up_formula(level) * percentage
 end
 
 ---Updates the market contents based on the current level.
@@ -139,13 +139,13 @@ function Experience.update_mining_speed(force, level_up)
         level_up = level_up ~= nil and level_up or 0
         if level_up > 0 and buff ~= nil then
             local level = get_force_data(force).current_level
-            local adjusted_value = floor(max(buff.value, 24*0.9^level))
+            local adjusted_value = floor(max(buff.value, 24 * 0.9 ^ level))
             local value = (buff.double_level ~= nil and level_up % buff.double_level == 0) and adjusted_value * 2 or adjusted_value
             mining_efficiency.level_modifier = mining_efficiency.level_modifier + (value * 0.01)
         end
         -- remove the current buff
         local old_modifier = force.manual_mining_speed_modifier - mining_efficiency.active_modifier
-
+        old_modifier = old_modifier >= 0 and old_modifier or 0
         -- update the active modifier
         mining_efficiency.active_modifier = mining_efficiency.research_modifier + mining_efficiency.level_modifier
 
@@ -168,7 +168,7 @@ function Experience.update_inventory_slots(force, level_up)
 
         -- remove the current buff
         local old_modifier = force.character_inventory_slots_bonus - inventory_slots.active_modifier
-
+        old_modifier = old_modifier >= 0 and old_modifier or 0
         -- update the active modifier
         inventory_slots.active_modifier = inventory_slots.research_modifier + inventory_slots.level_modifier
 
@@ -185,13 +185,13 @@ function Experience.update_health_bonus(force, level_up)
     if buff.max == nil or force.character_health_bonus < buff.max then
         level_up = level_up ~= nil and level_up or 0
         if level_up > 0 and buff ~= nil then
-            local value = (buff.double_level ~= nil and level_up%buff.double_level == 0) and buff.value*2 or buff.value
+            local value = (buff.double_level ~= nil and level_up % buff.double_level == 0) and buff.value * 2 or buff.value
             health_bonus.level_modifier = health_bonus.level_modifier + value
         end
 
         -- remove the current buff
         local old_modifier = force.character_health_bonus - health_bonus.active_modifier
-
+        old_modifier = old_modifier >= 0 and old_modifier or 0
         -- update the active modifier
         health_bonus.active_modifier = health_bonus.research_modifier + health_bonus.level_modifier
 
@@ -226,7 +226,7 @@ local function on_player_mined_entity(event)
         return
     end
 
-    print_player_floating_text_position(player_index, format('+%s XP', exp), gain_xp_color,0, -0.5)
+    print_player_floating_text_position(player_index, format('[img=entity/' .. name .. '] +%s XP', exp), gain_xp_color, 0, -0.5)
     add_experience(force, exp)
 end
 
@@ -248,13 +248,12 @@ local function on_research_finished(event)
         end
         exp = award_xp * research.research_unit_count
     end
-    local text = format('Research completed! +%s XP', exp)
+    local text = format('[img=item/automation-science-pack] Research completed! +%s XP', exp)
     for _, p in pairs(game.connected_players) do
         local player_index = p.index
         print_player_floating_text_position(player_index, text, gain_xp_color, -1, -0.5)
     end
     add_experience(force, exp)
-
 
     local current_modifier = mining_efficiency.research_modifier
     local new_modifier = force.mining_drill_productivity_bonus * config.mining_speed_productivity_multiplier * 0.5
@@ -269,6 +268,7 @@ local function on_research_finished(event)
 
     Experience.update_inventory_slots(force, 0)
     Experience.update_mining_speed(force, 0)
+    Experience.update_health_bonus(force, 0)
 
     game.forces.player.technologies['landfill'].enabled = false
 end
@@ -277,8 +277,9 @@ end
 ---@param event LuaEvent
 local function on_rocket_launched(event)
     local force = event.rocket.force
-    local exp = add_experience_percentage(force, config.XP['rocket_launch'])
-    local text = format('Rocket launched! +%s XP', exp)
+
+    local exp = add_experience_percentage(force, config.XP['rocket_launch'], nil, config.XP['rocket_launch_max'])
+    local text = format('[img=item/satellite] Rocket launched! +%s XP', exp)
     for _, p in pairs(game.connected_players) do
         local player_index = p.index
         print_player_floating_text_position(player_index, text, gain_xp_color, -1, -0.5)
@@ -291,15 +292,15 @@ local function on_entity_died(event)
     local entity = event.entity
     local force = event.force
     local cause = event.cause
+    local entity_name = entity.name
 
     --For bot mining and turrets
-    if not cause or not cause.valid or cause.type ~= 'player' then
+    if not cause or not cause.valid or cause.type ~= 'character' then
         local exp = 0
         local floating_text_position
 
         -- stuff killed by the player force, but not the player
         if force and force.name == 'player' then
-            local entity_name = entity.name
             if cause and (cause.name == 'artillery-turret' or cause.name == 'gun-turret' or cause.name == 'laser-turret' or cause.name == 'flamethrower-turret') then
                 exp = config.XP['enemy_killed'] * (config.alien_experience_modifiers[entity_name] or 1)
                 floating_text_position = cause.position
@@ -317,7 +318,7 @@ local function on_entity_died(event)
         end
 
         if exp > 0 then
-            Game.print_floating_text(entity.surface, floating_text_position, format('+%s XP', exp), gain_xp_color)
+            Game.print_floating_text(entity.surface, floating_text_position, format('[img=entity/' .. entity_name .. '] +%s XP', exp), gain_xp_color)
             add_experience(force, exp)
         end
 
@@ -329,7 +330,7 @@ local function on_entity_died(event)
     end
 
     local exp = config.XP['enemy_killed'] * (config.alien_experience_modifiers[entity.name] or 1)
-    print_player_floating_text_position(cause.player.index, format('+%d XP', exp), gain_xp_color, -1, -0.5)
+    print_player_floating_text_position(cause.player.index, format('[img=entity/' .. entity_name .. '] +%s XP', exp), gain_xp_color, -1, -0.5)
     add_experience(force, exp)
 end
 
@@ -338,7 +339,7 @@ end
 local function on_player_respawned(event)
     local player = get_player_by_index(event.player_index)
     local exp = remove_experience_percentage(player.force, config.XP['death-penalty'], 50)
-    local text = format('-%s XP', exp)
+    local text = format('[img=entity.player] -%s XP', exp)
     game.print(format('%s drained %s experience.', player.name, exp), lose_xp_color)
     for _, p in pairs(game.connected_players) do
         print_player_floating_text_position(p.index, text, lose_xp_color, -1, -0.5)
@@ -364,6 +365,7 @@ local function redraw_heading(data, header)
 
     local heading_table = frame.add(table_column_layout)
     apply_heading_style(heading_table.add({type = 'label', caption = 'Requirement'}).style, 100)
+    apply_heading_style(heading_table.add({type = 'label'}).style, 25)
     apply_heading_style(heading_table.add({type = 'label', caption = header_caption}).style, 220)
 end
 
@@ -372,8 +374,8 @@ local function redraw_progressbar(data)
     local flow = data.experience_progressbars
     Gui.clear(flow)
 
-    apply_heading_style(flow.add({type = 'label', tooltip = 'Currently at level: ' .. force_data.current_level .. '\nNext level at: ' .. Utils.comma_value((force_data.total_experience - force_data.current_experience) + force_data.experience_level_up_cap) ..' xp\nRemaining xp: ' .. Utils.comma_value(force_data.experience_level_up_cap - force_data.current_experience), name = 'Diggy.Experience.Frame.Progress.Level', caption = 'Progress to next level:'}).style)
-    local level_progressbar = flow.add({type = 'progressbar', tooltip = floor(force_data.experience_percentage*100)*0.01 .. '% xp to next level'})
+    apply_heading_style(flow.add({type = 'label', tooltip = 'Currently at level: ' .. force_data.current_level .. '\nNext level at: ' .. Utils.comma_value((force_data.total_experience - force_data.current_experience) + force_data.experience_level_up_cap) .. ' xp\nRemaining xp: ' .. Utils.comma_value(force_data.experience_level_up_cap - force_data.current_experience), name = 'Diggy.Experience.Frame.Progress.Level', caption = 'Progress to next level:'}).style)
+    local level_progressbar = flow.add({type = 'progressbar', tooltip = floor(force_data.experience_percentage * 100) * 0.01 .. '% xp to next level'})
     level_progressbar.style.width = 350
     level_progressbar.value = force_data.experience_percentage * 0.01
 end
@@ -393,7 +395,7 @@ local function redraw_table(data)
         local first_item_for_level = current_item_level ~= last_level
         local color
 
-        if current_force_level >= current_item_level  then
+        if current_force_level >= current_item_level then
             color = unlocked_color
         else
             color = locked_color
@@ -414,12 +416,18 @@ local function redraw_table(data)
         level_column.style.minimal_width = 100
         level_column.style.font_color = color
 
+        local spacer = list.add({
+            type = 'flow'
+        })
+        spacer.style.minimal_width = 25
+
         local item_column = list.add({
             type = 'label',
-            caption = prototype.name
+            caption = '[img=item/' .. prototype.name .. '] | ' .. prototype.name
         })
-        item_column.style.minimal_width = 22
+        item_column.style.minimal_width = 200
         item_column.style.font_color = color
+        item_column.style.horizontal_align = 'left'
 
         last_level = current_item_level
     end
@@ -444,14 +452,20 @@ local function redraw_buff(data)
         level_label.style.minimal_width = 100
         level_label.style.font_color = unlocked_color
 
+        local spacer = list.add({
+            type = 'flow'
+        })
+        spacer.style.minimal_width = 25
+
         local buff_caption
         local effect_value = effects.value
+        local effect_max = effects.max
         if name == 'mining_speed' then
-            buff_caption = format('+%d mining speed', effect_value)
+            buff_caption = format('+%d%% mining speed (up to: %d00%%)', effect_value, effect_max)
         elseif name == 'inventory_slot' then
-            buff_caption = format('+%d inventory slot%s', effect_value, effect_value > 1 and 's' or '')
+            buff_caption = format('+%d inventory slot%s (up to: %d)', effect_value, effect_value > 1 and 's' or '', effect_max)
         elseif name == 'health_bonus' then
-            buff_caption = format('+%d max health', effect_value)
+            buff_caption = format('+%d max health (up to: %d)', effect_value, effect_max)
         else
             buff_caption = format('+%d %s', effect_value, name)
         end
@@ -522,7 +536,7 @@ end
 Gui.allow_player_to_toggle_top_element_visibility('Diggy.Experience.Button')
 
 Gui.on_click('Diggy.Experience.Button', toggle)
-Gui.on_custom_close('Diggy.Experience.Frame', function (event)
+Gui.on_custom_close('Diggy.Experience.Frame', function(event)
     event.element.destroy()
 end)
 
@@ -538,6 +552,12 @@ local function update_gui()
             toggle(data)
         end
     end
+
+    --Resets buffs if they have been set to 0
+    local force = game.forces.player
+    Experience.update_inventory_slots(force, 0)
+    Experience.update_mining_speed(force, 0)
+    Experience.update_health_bonus(force, 0)
 end
 
 function Experience.register(cfg)
@@ -549,8 +569,8 @@ function Experience.register(cfg)
     local ForceControlBuilder = ForceControl.register(level_up_formula)
 
     --Adds a function that'll be executed at every level up
-    ForceControlBuilder.register_on_every_level(function (level_reached, force)
-        Toast.toast_force(force, 10 , format('Your team has reached level %d!', level_reached))
+    ForceControlBuilder.register_on_every_level(function(level_reached, force)
+        Toast.toast_force(force, 10, format('Your team has reached level %d!', level_reached))
         Experience.update_inventory_slots(force, level_reached)
         Experience.update_mining_speed(force, level_reached)
         Experience.update_health_bonus(force, level_reached)

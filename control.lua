@@ -50,6 +50,9 @@ end
 if config.redmew_commands.enabled then
     require 'features.redmew_commands'
 end
+if config.donator_commands.enabled then
+    require 'features.donator_commands'
+end
 if config.market.enabled then
     require 'features.market'
 end
@@ -61,9 +64,6 @@ if config.player_colors.enabled then
 end
 if config.reactor_meltdown.enabled then
     require 'features.reactor_meltdown'
-end
-if config.walkabout.enabled then
-    require 'features.walkabout'
 end
 if config.performance.enabled then
     require 'features.performance'
@@ -85,6 +85,15 @@ if config.day_night.enabled then
 end
 if config.apocalypse.enabled then
     require 'features.apocalypse'
+end
+if config.player_onboarding.enabled then
+    require 'features.player_onboarding'
+end
+if config.biter_attacks.enabled then
+    require 'map_gen.shared.biter_attacks'
+end
+if config.player_quick_bars.enabled then
+    require 'features.player_quick_bars'
 end
 
 -- GUIs
@@ -121,7 +130,14 @@ end
 if config.popup.enabled then
     require 'features.gui.popup'
 end
+if config.rich_text_gui.enabled then
+    require 'features.gui.rich_text'
+end
 
+-- Debug-only modules
+if _DEBUG then
+    require 'features.scenario_data_manipulation'
+end
 -- Needs to be at bottom so tokens are registered last.
 if _DUMP_ENV then
     require 'utils.dump_env'

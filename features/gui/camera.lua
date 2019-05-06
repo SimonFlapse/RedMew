@@ -58,7 +58,7 @@ local function create_camera(args, player)
 
     if not mainframe then
         mainframe = mainframeflow.add {type = 'frame', name = mainframeid, direction = 'vertical', style = 'captionless_frame'}
-        mainframe.style.visible = true
+        mainframe.visible = true
     end
 
     local headerframe = mainframe.headerframe
@@ -71,7 +71,7 @@ local function create_camera(args, player)
         mainframe.add {type = 'frame', name = 'cameraframe', style = 'captionless_frame'}
     end
 
-    mainframe.add {type = 'label', caption = 'Following: ' .. args.target}
+    mainframe.add {type = 'label', caption = 'Following: ' .. target.name}
     local close_button = mainframe.add {type = 'button', name = main_button_name, caption = 'Close'}
     apply_button_style(close_button)
     local target_index = target.index
@@ -122,7 +122,7 @@ local function update_camera_render(target, targetframe, zoom, size, visible)
     camera.position = position
     camera.surface_index = surface_index
     camera.zoom = zoom
-    camera.style.visible = visible
+    camera.visible = visible
     camera.style.minimal_width = preview_size
     camera.style.minimal_height = preview_size
     camera.style.maximal_width = preview_size
@@ -193,7 +193,7 @@ end
 Command.add(
     'watch',
     {
-        description = 'Allows you to watch other players.',
+        description = {'command_description.watch'},
         arguments = {'target'},
         default_values = {target = false}
     },

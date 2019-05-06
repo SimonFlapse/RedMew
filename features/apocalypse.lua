@@ -46,6 +46,7 @@ local biter_spawn_token =
         player_force = game.forces.player
 
         HailHydra.set_hydras(hail_hydra_data)
+        HailHydra.set_evolution_scale(1)
         HailHydra.enable_hail_hydra()
         enemy_force.evolution_factor = 1
 
@@ -102,8 +103,8 @@ end
 Command.add(
     'apocalypse',
     {
-        description = "This really ends the map. When you first run it, the game will save. When run a second time, the apocalypse will begin.",
-        required_rank = Ranks.admin,
+        description = {'command_description.apocalypse'},
+        required_rank = Ranks.admin
     },
     Public.begin_apocalypse
 )

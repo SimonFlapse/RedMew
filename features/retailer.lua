@@ -74,7 +74,7 @@ Retailer.events = {
     --        player = player,
     --        group_name = group_name,
     --    }
-    on_market_purchase = script.generate_event_name(),
+    on_market_purchase = Event.generate_event_name('on_market_purchase'),
 }
 
 Retailer.item_types = {
@@ -584,6 +584,12 @@ end)
 ---@param market_entity LuaEntity
 function Retailer.add_market(group_name, market_entity)
     set_market_group_name(market_entity.position, group_name)
+end
+
+---Returns the group name of the market, nil if not registered.
+---@param market_entity LuaEntity
+function Retailer.get_market_group_name(market_entity)
+    return get_market_group_name(market_entity.position)
 end
 
 ---Sets an item for all the group_name markets.

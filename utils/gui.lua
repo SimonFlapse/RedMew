@@ -205,7 +205,7 @@ Event.add(
             type = 'button',
             name = toggle_button_name,
             caption = '<',
-            tooltip = 'Shows / hides the Redmew Gui buttons.'
+            tooltip = {'gui_util.button_tooltip'}
         }
         local style = b.style
         style.width = 18
@@ -230,14 +230,9 @@ Gui.on_click(
                 local name = top_elements[i]
                 local ele = top[name]
                 if ele and ele.valid then
-                    local style = ele.style
-
-                    -- if visible is not set it has the value of nil.
-                    -- Hence nil is treated as is visible.
-                    local v = style.visible
-                    if v or v == nil then
+                    if ele.visible then
                         custom_raise(on_pre_hidden_handlers, ele, player)
-                        style.visible = false
+                        ele.visible = false
                     end
                 end
             end
@@ -249,10 +244,8 @@ Gui.on_click(
                 local name = top_elements[i]
                 local ele = top[name]
                 if ele and ele.valid then
-                    local style = ele.style
-
-                    if not style.visible then
-                        style.visible = true
+                    if not ele.visible then
+                        ele.visible = true
                         custom_raise(on_visible_handlers, ele, player)
                     end
                 end

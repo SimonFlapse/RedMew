@@ -10,7 +10,7 @@ global.config = {
         -- The title of the map
         map_name_key = 'This Map has no name',
         -- The long description of the map, typically 1 paragraph
-        map_description_key = "This section is supposed to be filled out on a per map basis. If you're seeing this message, ping the admin team to get a description added for this map. A 20 coin bonus is available to the first person to point this out.",
+        map_description_key = "This section is supposed to be filled out on a per map basis.\nIf you're seeing this message, ping the admin team to get a description\nadded for this map. 20 coins is rewarded to the first person that points this out.",
         -- The feature list of the map
         map_extra_info_key = 'This map has no extra information',
         -- New Scenario Features, appears in the "What's new" tab
@@ -170,7 +170,6 @@ global.config = {
             start_with_power_armor = true,
             -- adds additional items to the player when _CHEATS is true
             starting_items = {
-                {name = 'steel-axe', count = 10},
                 {name = 'submachine-gun', count = 1},
                 {name = 'uranium-rounds-magazine', count = 200},
                 {name = 'construction-robot', count = 250},
@@ -181,34 +180,68 @@ global.config = {
                 {name = 'small-plane', count = 2},
                 {name = 'coin', count = 20000},
                 {name = 'rocket-part', count = 2},
-                {name = 'computer', count = 2}
+                {name = 'computer', count = 2},
+                {name = 'infinity-pipe', count = 10},
+                {name = 'heat-interface', count = 10},
+                {name = 'compilatron-chest', count = 5},
+                {name = 'compilatron-chest', count = 5},
+                {name = 'escape-pod-assembler', count = 5},
+                {name = 'escape-pod-lab', count = 10},
+                {name = 'escape-pod-power', count = 5},
+                {name = 'pollution', count = 5},
+                {name = 'selection-tool', count = 1}
             }
         }
     },
     -- spawns more units when one dies
     hail_hydra = {
         enabled = false,
-        -- at which scale the evolution will increase the additional hydra spawns
-        -- to disable scaling with evolution, set to 0.
-        -- the formula: chance = hydra_chance + (evolution_factor * evolution_scale)
-        -- example: small spitter has 0.2, which is 20% at 0% and 120% at an evolution_factor of 1
-        evolution_scale = 1,
+        -- enables difficulty scaling with number of online players
+        -- if enabled you can disable it for individual spawns by setting {locked = true}
+        online_player_scale_enabled = true,
+        -- the number of players required for regular values.
+        -- less online players than this number decreases the spawn chances
+        -- more online players than this number increases the spawn chances
+        -- the spawn chance is increased or decreased with 0.01 * (#connected_players - online_player_scale)
+        online_player_scale = 20,
         -- any non-rounded number will turn into a chance to spawn an additional alien
         -- example: 2.5 would spawn 2 for sure and 50% chance to spawn one additionally
+        -- min defines the lowest chance, max defines the max chance at evolution 1.
+        -- trigger defines when the chance is active
+        -- setting max to less than min or nil will ignore set the max = min
+        -- Hail Hydra scales between min and max with a custom formula.
+        -- Key values shown in evolution = (percentage of max):
+        -- | 0.25 evolution = 10% | 0.50 evolution = 29% | 0.60 evolution = 45% | 0.75 evolution = 58% |
+        -- | 0.80 evolution = 65% | 0.90 evolution = 81% | 1.00 evolution = 100% |
+        -- eg. {min = 0.2, max = 2, trigger = 0.3} means that after evolution 0.3 this hydra spawns with a chance of at least 0.2
+        -- and at evolution = 1.00 it spawns with a chance of 2.
+        -- At evolution 0.60 it would spawn with a chance of min + max * (percentage of max) = 1.1
+        -- Example of all available options (only min is required):
+        -- ['behemoth-biter'] = {min = 0.1, max = 0.5, trigger = 0.90, locked = true}}
         hydras = {
             -- spitters
-            ['small-spitter'] = {['small-worm-turret'] = 0.2},
-            ['medium-spitter'] = {['medium-worm-turret'] = 0.2},
-            ['big-spitter'] = {['big-worm-turret'] = 0.2},
-            ['behemoth-spitter'] = {['big-worm-turret'] = 0.4},
+            ['small-spitter'] = {['small-worm-turret'] = {min = 0.2, max = 1}},
+            ['medium-spitter'] = {['medium-worm-turret'] = {min = 0.2, max = 1}},
+            ['big-spitter'] = {['big-worm-turret'] = {min = 0.2, max = 1}},
+            ['behemoth-spitter'] = {['behemoth-worm-turret'] = {min = 0.2, max = 1}},
             -- biters
-            ['medium-biter'] = {['small-biter'] = 1.2},
-            ['big-biter'] = {['medium-biter'] = 1.2},
-            ['behemoth-biter'] = {['big-biter'] = 1.2},
+            ['medium-biter'] = {['small-biter'] = {min = 1, max = 2}},
+            ['big-biter'] = {['medium-biter'] = {min = 1, max = 2}},
+            ['behemoth-biter'] = {['big-biter'] = {min = 1, max = 2}},
             -- worms
-            ['small-worm-turret'] = {['small-biter'] = 2.5},
-            ['medium-worm-turret'] = {['small-biter'] = 2.5, ['medium-biter'] = 0.6},
-            ['big-worm-turret'] = {['small-biter'] = 3.8, ['medium-biter'] = 1.3, ['big-biter'] = 1.1}
+            ['small-worm-turret'] = {['small-biter'] = {min = 1.5, max = 2.5}},
+            ['medium-worm-turret'] = {['small-biter'] = {min = 2.5, max = 3.5}, ['medium-biter'] = {min = 1.0, max = 2}},
+            ['big-worm-turret'] = {
+                ['small-biter'] = {min = 2.5, max = 4},
+                ['medium-biter'] = {min = 1.5, max = 2.2},
+                ['big-biter'] = {min = 0.7, max = 1.5}
+            },
+            ['behemoth-worm-turret'] = {
+                ['small-biter'] = {min = 4, max = 5.2},
+                ['medium-biter'] = {min = 2.5, max = 3.8},
+                ['big-biter'] = {min = 1.2, max = 2.4},
+                ['behemoth-biter'] = {min = 0.8, max = -1}
+            }
         }
     },
     -- grants reward coins for certain actions
@@ -239,15 +272,19 @@ global.config = {
     admin_commands = {
         enabled = true
     },
-    player_colors = {
+    -- adds commands for donators
+    donator_commands = {
         enabled = true
     },
-    -- adds a command that switches a player to the enemy force and teleports them far away for some time to calm down
-    walkabout = {
+    player_colors = {
         enabled = true
     },
     -- adds a command to generate a popup dialog box for players to see, useful for important announcements
     popup = {
+        enabled = true
+    },
+    -- adds a command to open a gui that creates rich text
+    rich_text_gui = {
         enabled = true
     },
     -- adds a camera to watch another player
@@ -266,7 +303,13 @@ global.config = {
         -- gives players entity ghosts (from destruction like biter attacks) before the required research is complete
         ghosts_before_research = true,
         -- adds craftable loaders.
-        loaders = true
+        loaders = true,
+        -- turns on entity info aka alt-mode on first joining
+        set_alt_on_create = true,
+        -- prevents personal construction robots from being mined by other players
+        save_bots = true,
+        -- enable research_queue
+        research_queue = true
     },
     -- adds a useless button with the biter percentage
     evolution_progress = {
@@ -291,6 +334,32 @@ global.config = {
     },
     -- enables a command which allows for an end-game event
     apocalypse = {
+        enabled = true
+    },
+    -- gradually informs players of features such as chat, toasts, etc.
+    player_onboarding = {
+        enabled = true
+    },
+    -- allows for large-scale biter attacks
+    biter_attacks = {
+        enabled = true,
+        -- whether or not to send attacks on timed intervals (against a random player)
+        timed_attacks = {
+            enabled = true,
+            -- frequency of automatic attacks (in seconds)
+            attack_frequency = 40 * 60, -- 40 minutes
+            -- difficulty of automatic attacks (1-easy, 3-normal, 10-hard, 40-brutal)
+            attack_difficulty = 3
+        },
+        -- whether or not to send attacks on rocket launches
+        launch_attacks = {
+            enabled = true,
+            -- whether to only attack on the first launch
+            first_launch_only = true
+        }
+    },
+    -- allows the saving and automatic loading of quickbars between maps
+    player_quick_bars = {
         enabled = true
     }
 }

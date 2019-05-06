@@ -58,7 +58,7 @@ local Public = {
             ghost :: boolean indicating if the entity was a ghost
             stack :: LuaItemStack
         ]]
-        on_pre_restricted_entity_destroyed = script.generate_event_name(),
+        on_pre_restricted_entity_destroyed = Event.generate_event_name('on_pre_restricted_entity_destroyed'),
         --[[
         on_restricted_entity_destroyed
         Called when an entity is destroyed by this script
@@ -70,7 +70,7 @@ local Public = {
             ghost :: boolean indicating if the entity was a ghost
             item_returned :: boolean indicating if a refund of the item was attempted
         ]]
-        on_restricted_entity_destroyed = script.generate_event_name()
+        on_restricted_entity_destroyed = Event.generate_event_name('on_restricted_entity_destroyed')
     }
 }
 
@@ -126,7 +126,14 @@ local on_built_token =
         -- Takes the keep_alive_callback function and runs it with the entity as an argument
         -- If true is returned, we exit. If false, we destroy the entity.
         local keep_alive_callback = primitives.keep_alive_callback
-        if not banned_entities[name] and keep_alive_callback and keep_alive_callback(entity) then
+
+        -- return in these cases:
+        -- not banned and no callback function
+        -- not banned and callback function and saved by callback
+        -- destroy in these cases:
+        -- all banned ents
+        -- not banned and callback function and not saved by callback
+        if not banned_entities[name] and (not keep_alive_callback or keep_alive_callback(entity)) then
             return
         end
 
@@ -196,7 +203,7 @@ end
 -- @param keep_alive_callback <function>
 function Public.set_keep_alive_callback(keep_alive_callback)
     if type(keep_alive_callback) ~= 'function' then
-        error('Sending a non-funciton')
+        error('Sending a non-function')
     end
     primitives.keep_alive_callback = keep_alive_callback
     check_event_status()
