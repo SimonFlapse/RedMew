@@ -1,6 +1,10 @@
 -- dependencies
 local abs = math.abs
 
+-- Entities that spawns as keys with values denoting the chance between 0-1. -1 means it defaults to that. Default: {['sand-rock-big'] = -1, ['rock-big'] = 0.2, ['rock-huge'] = 0.6}
+-- ['tree-01'] = -1, ['tree-02'] = 0.2, ['tree-03'] = 0.6
+local diggy_entities = {['tree-01'] = -1, ['tree-02'] = 0.2, ['tree-03'] = 0.6}
+
 -- this
 local Config = {
     -- a list of features to register and enable
@@ -12,7 +16,9 @@ local Config = {
             -- initial starting position size, higher values are not recommended
             starting_size = 8,
             -- where the market should spawn
-            market_spawn_position = {x = 0, y = 3}
+            market_spawn_position = {x = 0, y = 3},
+            -- the entity the spawn is surrounded by, has to match one entity defined in diggy_entities (default: rock-big)
+            start_entity = 'tree-01'
         },
         -- controls the Daylight (Default diggy: enabled = true)
         night_time = {
@@ -59,10 +65,12 @@ local Config = {
 
             -- turn this setting on if you want to bring back landfill research, default is off due to griefing
             allow_landfill_research = false,
+
+            diggy_entities = diggy_entities
         },
         -- adds the ability to collapse caves
         diggy_cave_collapse = {
-            enabled = true,
+            enabled = false,
             -- adds per tile what the current stress is
             enable_stress_grid = false,
             -- shows the mask on spawn

@@ -2,6 +2,7 @@
 local Task = require 'utils.task'
 local Token = require 'utils.token'
 local Event = require 'utils.event'
+local Config = require 'map_gen.maps.diggy.config'
 local min = math.min
 local ceil = math.ceil
 local raise_event = script.raise_event
@@ -157,12 +158,18 @@ function Template.resources(surface, resources)
     end
 end
 
-Template.diggy_rocks = {'sand-rock-big', 'rock-big', 'rock-huge'}
+Template.diggy_rocks = Config.features.diggy_hole.diggy_entities
 
 ---Returns true if the entity name is that of a diggy rock.
 ---@param entity_name string
 function Template.is_diggy_rock(entity_name)
-    return entity_name == 'sand-rock-big' or entity_name == 'rock-big' or entity_name == 'rock-huge'
+    for k, _ in pairs(Template.diggy_rocks) do
+        if entity_name == k then
+            return true
+        end
+    end
+    return false
+    --return entity_name == 'sand-rock-big' or entity_name == 'rock-big' or entity_name == 'rock-huge'
 end
 
 return Template
