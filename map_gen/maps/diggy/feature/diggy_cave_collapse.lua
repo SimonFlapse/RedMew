@@ -23,7 +23,11 @@ local set_timeout = Task.set_timeout
 local set_timeout_in_ticks = Task.set_timeout_in_ticks
 local ceiling_crumble = CreateParticles.ceiling_crumble
 local clear_table = table.clear_table
-local collapse_rocks = Template.diggy_rocks
+local collapse_rocks = {}
+for k, _ in pairs(Template.diggy_rocks) do
+    table.insert(collapse_rocks, k)
+end
+
 local collapse_rocks_size = #collapse_rocks
 local cave_collapses_name = 'cave-collapses'
 
@@ -31,6 +35,7 @@ local cave_collapses_name = 'cave-collapses'
 local DiggyCaveCollapse = {}
 
 local config
+local collapse_entity
 
 local n = 9
 local radius = 0
@@ -132,7 +137,7 @@ local function create_collapse_template(positions, surface)
 end
 
 local function create_collapse_alert(surface, position)
-    local target = surface.create_entity({position = position, name = 'rock-big'})
+    local target = surface.create_entity({position = position, name = collapse_entity})
     for _, player in pairs(game.connected_players) do
         player.add_custom_alert(target, collapse_alert, {'diggy.cave_collapse'}, true)
     end
@@ -206,7 +211,7 @@ local function on_collapse_triggered(event)
 
     local x_t = new_tile_map[x]
     if x_t and x_t[y] then
-        template_insert(surface, {}, {{position = position, name = 'rock-big'}})
+        template_insert(surface, {}, {{position = position, name = collapse_entity}})
         return
     end
     spawn_collapse_text(surface, position)
@@ -341,7 +346,9 @@ function DiggyCaveCollapse.register(cfg)
     global_to_show[#global_to_show + 1] = cave_collapses_name
 
     config = cfg
+    collapse_entity = cfg.collapse_entity
     support_beam_entities = config.support_beam_entities
+    collapse_alert = {type = 'item', name = cfg.collapse_item}
 
     if support_beam_entities['stone-path'] then
         support_beam_entities['stone-brick'] = support_beam_entities['stone-path']

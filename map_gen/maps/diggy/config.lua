@@ -70,7 +70,7 @@ local Config = {
         },
         -- adds the ability to collapse caves
         diggy_cave_collapse = {
-            enabled = false,
+            enabled = true,
             -- adds per tile what the current stress is
             enable_stress_grid = false,
             -- shows the mask on spawn
@@ -99,7 +99,11 @@ local Config = {
             cracking_sounds = {
                 {'diggy.cracking_sound_1'},
                 {'diggy.cracking_sound_2'}
-            }
+            },
+            -- the entity that spawns on collapse, has to match one entity defined in diggy_entities (default: rock-big)
+            collapse_entity = 'tree-01',
+            -- the item that is used as icon for the collapse alert
+            collapse_item = 'wood'
         },
         -- Adds the ability to drop coins and track how many are sent into space
         coin_gathering = {
