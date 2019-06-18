@@ -23,6 +23,7 @@ local mine_size_name = 'mine-size'
 local DiggyHole = {}
 local config
 local diggy_entities
+local diggy_tile
 
 -- keeps track of the amount of times per player when they mined with a full inventory in a row
 local full_inventory_mining_cache = {}
@@ -90,7 +91,11 @@ local function diggy_hole(entity)
 
     for i = #out_of_map_found, 1, -1 do
         local void_position = out_of_map_found[i]
-        tiles[i] = {name = 'dirt-' .. random(1, 7), position = void_position}
+        if diggy_tile == 'grass' then
+            tiles[i] = {name = 'grass-' .. random(1, 4), position = void_position}
+        else
+            tiles[i] = {name = 'dirt-' .. random(1, 7), position = void_position}
+        end
         local predicted = random()
         for entity_name, chance in pairs(diggy_entities) do
             if predicted > chance then
@@ -162,6 +167,7 @@ function DiggyHole.register(cfg)
 
     config = cfg
     diggy_entities = cfg.diggy_entities
+    diggy_tile = cfg.diggy_tile
     robot_mining.damage = cfg.robot_initial_mining_damage
 
     Event.add(

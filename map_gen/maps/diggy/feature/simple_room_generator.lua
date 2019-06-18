@@ -17,6 +17,8 @@ local on_entity_died = defines.events.on_entity_died
 -- this
 local SimpleRoomGenerator = {}
 
+local diggy_water
+
 local do_spawn_tile = Token.register(function(params)
     template_insert(params.surface, {params.tile}, {})
 end)
@@ -51,7 +53,7 @@ local function handle_noise(name, surface, position)
 
     if 'water' == name then
         -- water is slower because for some odd reason it doesn't always want to mine it properly
-        set_timeout_in_ticks(4, do_spawn_tile, { surface = surface, tile = {name = 'deepwater-green', position = position}})
+        set_timeout_in_ticks(4, do_spawn_tile, { surface = surface, tile = {name = diggy_water, position = position}})
         return
     end
 
@@ -64,6 +66,7 @@ end
 function SimpleRoomGenerator.register(config)
     local room_noise_minimum_distance_sq = config.room_noise_minimum_distance * config.room_noise_minimum_distance
     local noise_variance = config.noise_variance
+    diggy_water = config.water
 
     local seed
     local function get_noise(surface, x, y)

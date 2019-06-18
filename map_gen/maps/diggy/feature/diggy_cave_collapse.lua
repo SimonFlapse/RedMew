@@ -195,12 +195,14 @@ local function spawn_collapse_text(surface, position)
         b = 0
     }
 
-    surface.create_entity({
-        name = 'tutorial-flying-text',
-        color = color,
-        text = config.cracking_sounds[random(#config.cracking_sounds)],
-        position = position,
-    })
+    surface.create_entity(
+        {
+            name = 'tutorial-flying-text',
+            color = color,
+            text = config.cracking_sounds[random(#config.cracking_sounds)],
+            position = position
+        }
+    )
 end
 
 local function on_collapse_triggered(event)
@@ -258,6 +260,10 @@ end
 
 local function on_mined_entity(event)
     local entity = event.entity
+    if not entity or not entity.valid then
+        return
+    end
+
     local name = entity.name
     local strength = support_beam_entities[name]
     if strength then
@@ -271,6 +277,10 @@ end
 
 local function on_entity_died(event)
     local entity = event.entity
+    if not entity or not entity.valid then
+        return
+    end
+
     local name = entity.name
     local strength = support_beam_entities[name]
     if strength then
@@ -426,10 +436,7 @@ function DiggyCaveCollapse.register(cfg)
             end
 
             if (nil ~= support_beam_entities[event.entity.name]) then
-                require 'features.gui.popup'.player(
-                    game.get_player(player_index),
-{'diggy.cave_collapse_warning'}
-                )
+                require 'features.gui.popup'.player(game.get_player(player_index), {'diggy.cave_collapse_warning'})
                 show_deconstruction_alert_message[player_index] = nil
             end
         end

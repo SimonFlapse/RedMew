@@ -57,7 +57,11 @@ function StartingZone.register(config)
 
                 if (distance < starting_zone_size) then
                     if (distance > dirt_range) then
-                        insert(tiles, {name = 'dirt-' .. random(1, 7), position = {x = x, y = y}})
+                        if config.start_tile == 'grass' then
+                            insert(tiles, {name = 'grass-' .. random(1, 4), position = {x = x, y = y}})
+                        else
+                            insert(tiles, {name = 'dirt-' .. random(1, 7), position = {x = x, y = y}})
+                        end
                     else
                         insert(tiles, {name = 'stone-path', position = {x = x, y = y}})
                     end
@@ -76,8 +80,8 @@ function StartingZone.register(config)
 
         Template.insert(surface, tiles, rocks)
 
-        local position = config.market_spawn_position;
-        local player_force = game.forces.player;
+        local position = config.market_spawn_position
+        local player_force = game.forces.player
 
         local market = surface.create_entity({name = 'market', position = position})
         market.destructible = false
@@ -85,10 +89,13 @@ function StartingZone.register(config)
         Retailer.set_market_group_label('player', 'Diggy Market')
         Retailer.add_market('player', market)
 
-        player_force.add_chart_tag(surface, {
-            text = 'Market',
-            position = position,
-        })
+        player_force.add_chart_tag(
+            surface,
+            {
+                text = 'Market',
+                position = position
+            }
+        )
 
         raise_event(Template.events.on_placed_entity, {entity = market})
 

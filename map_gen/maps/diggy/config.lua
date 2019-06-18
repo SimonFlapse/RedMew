@@ -19,7 +19,9 @@ local Config = {
             -- where the market should spawn
             market_spawn_position = {x = 0, y = 3},
             -- the entity the spawn is surrounded by, has to match one entity defined in diggy_entities (default: rock-big)
-            start_entity = 'tree-01'
+            start_entity = 'tree-07',
+            -- the tile the spawn is made off
+            start_tile = 'grass' -- grass or dirt
         },
         -- controls the Daylight (Default diggy: enabled = true)
         night_time = {
@@ -67,11 +69,13 @@ local Config = {
             -- turn this setting on if you want to bring back landfill research, default is off due to griefing
             allow_landfill_research = false,
 
-            diggy_entities = diggy_entities
+            diggy_entities = diggy_entities,
+
+            diggy_tile = 'grass' -- grass or dirt
         },
         -- adds the ability to collapse caves
         diggy_cave_collapse = {
-            enabled = true,
+            enabled = false,
             -- adds per tile what the current stress is
             enable_stress_grid = false,
             -- shows the mask on spawn
@@ -190,7 +194,8 @@ local Config = {
                 {name = 'water', min = 0.54, max = 0.7},
                 {name = 'dirt', min = 0.46, max = 0.53},
                 {name = 'dirt', min = 0.37, max = 0.45}
-            }
+            },
+            water = 'water' -- The water that spawns when a room opens (Diggy default: deepwater-green)
         },
         -- responsible for resource spawning
         scattered_resources = {
