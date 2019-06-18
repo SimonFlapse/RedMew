@@ -3,6 +3,7 @@ local Event = require 'utils.event'
 local Game = require 'utils.game'
 local Global = require 'utils.global'
 local Toast = require 'features.gui.toast'
+local Template = require 'map_gen.maps.diggy.template'
 local ForceControl = require 'features.force_control'
 local ScoreTracker = require 'utils.score_tracker'
 local Retailer = require 'features.retailer'
@@ -23,6 +24,7 @@ local set_item = Retailer.set_item
 local disable_item = Retailer.disable_item
 local enable_item = Retailer.enable_item
 local experience_lost_name = 'experience-lost'
+local is_diggy_rock = Template.is_diggy_rock
 
 -- this
 local Experience = {}
@@ -194,9 +196,7 @@ function Experience.update_health_bonus(force, level_up)
 end
 
 -- declaration of variables to prevent table look ups @see Experience.register
-local sand_rock_xp
-local rock_big_xp
-local rock_huge_xp
+local common
 
 ---Awards experience when a rock has been mined (increases by 1 XP every 5th level)
 ---@param event LuaEvent
@@ -211,12 +211,8 @@ local function on_player_mined_entity(event)
     local force = game.get_player(player_index).force
     local level = get_force_data(force).current_level
     local exp = 0
-    if name == 'sand-rock-big' then
-        exp = sand_rock_xp + floor(level / 5)
-    elseif name == 'rock-big' then
-        exp = rock_big_xp + floor(level / 5)
-    elseif name == 'rock-huge' then
-        exp = rock_huge_xp + floor(level / 5)
+    if is_diggy_rock(name) then
+        exp = common + floor(level / 5)
     end
 
     if exp == 0 then
@@ -305,12 +301,8 @@ local function on_entity_died(event)
                 floating_text_position = cause.position
             else
                 local level = get_force_data(force).current_level
-                if entity_name == 'tree-01' then
-                    exp = floor((sand_rock_xp + level * 0.2) * 0.5)
-                elseif entity_name == 'tree-03' then
-                    exp = floor((rock_big_xp + level * 0.2) * 0.5)
-                elseif entity_name == 'tree-06' then
-                    exp = floor((rock_huge_xp + level * 0.2) * 0.5)
+                if is_diggy_rock(entity_name) then
+                    exp = floor((common + level * 0.2) * 0.5)
                 end
                 floating_text_position = entity.position
             end
@@ -618,9 +610,7 @@ function Experience.register(cfg)
     Event.on_nth_tick(61, update_gui)
 
     -- Prevents table lookup thousands of times
-    sand_rock_xp = config.XP['tree-01']
-    rock_big_xp = config.XP['tree-03']
-    rock_huge_xp = config.XP['tree-06']
+    common = config.XP['common']
 end
 
 function Experience.on_init()

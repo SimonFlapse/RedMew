@@ -3,7 +3,8 @@ local abs = math.abs
 
 -- Entities that spawns as keys with values denoting the chance between 0-1. -1 means it defaults to that. Default: {['sand-rock-big'] = -1, ['rock-big'] = 0.2, ['rock-huge'] = 0.6}
 -- ['tree-01'] = -1, ['tree-02'] = 0.2, ['tree-03'] = 0.6
-local diggy_entities = {['tree-01'] = -1, ['tree-03'] = 0.2, ['tree-05'] = 0.4, ['tree-07'] = 0.6, ['tree-08'] = 0.8}
+-- They need to be in accending order
+local diggy_entities = {['sand-rock-big'] = -1, ['rock-big'] = 0.18, ['tree-01'] = 0.375, ['tree-03'] = 0.5, ['tree-05'] = 0.625, ['tree-07'] = 0.75, ['tree-08'] = 0.875}
 
 -- this
 local Config = {
@@ -70,7 +71,7 @@ local Config = {
         },
         -- adds the ability to collapse caves
         diggy_cave_collapse = {
-            enabled = false,
+            enabled = true,
             -- adds per tile what the current stress is
             enable_stress_grid = false,
             -- shows the mask on spawn
@@ -352,9 +353,7 @@ local Config = {
             -- percentage * mining productivity level gets added to mining speed
             mining_speed_productivity_multiplier = 5,
             XP = {
-                ['tree-01'] = 5,
-                ['tree-03'] = 5,
-                ['tree-06'] = 10,
+                ['common'] = 5, -- base XP rewarded for all types of diggy entities unless otherwise specified here (Diggy default: 5)
                 ['rocket_launch'] = 0.05, -- XP reward in percentage of total experience when a rocket launches (Diggy default: 0.05 which equals 5%)
                 ['rocket_launch_max'] = 500000, -- Max XP reward from rocket launches (Diggy default: 500000)
                 ['automation-science-pack'] = 4,
