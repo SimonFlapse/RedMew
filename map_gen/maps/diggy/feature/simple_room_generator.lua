@@ -21,7 +21,10 @@ local do_spawn_tile = Token.register(function(params)
     template_insert(params.surface, {params.tile}, {})
 end)
 
-local rocks_lookup = Template.diggy_rocks
+local rocks_lookup = {}
+for k, _ in pairs(Template.diggy_rocks) do
+    table.insert(rocks_lookup, k)
+end
 
 local do_mine = Token.register(function(params)
     local surface = params.surface
@@ -29,7 +32,6 @@ local do_mine = Token.register(function(params)
     local rocks = surface.find_entities_filtered({position = position, radius = 1, name = rocks_lookup})
     local rock_count = #rocks
     if rock_count == 0 then
-        Debug.print('return', 2)
         return
     end
 
@@ -37,7 +39,6 @@ local do_mine = Token.register(function(params)
         local rock = rocks[i]
         raise_event(on_entity_died, {entity = rock})
         rock.destroy()
-        Debug.print('Destroy ' .. rock.name, 2)
     end
 end)
 
