@@ -3,7 +3,7 @@ local abs = math.abs
 
 -- Entities that spawns as keys with values denoting the chance between 0-1. -1 means it defaults to that. Default: {['sand-rock-big'] = -1, ['rock-big'] = 0.2, ['rock-huge'] = 0.6}
 -- ['tree-01'] = -1, ['tree-02'] = 0.2, ['tree-03'] = 0.6
-local diggy_entities = {['tree-01'] = -1, ['tree-02'] = 0.2, ['tree-03'] = 0.6}
+local diggy_entities = {['sand-rock-big'] = -1, ['rock-big'] = 0.2, ['rock-huge'] = 0.6}
 
 -- this
 local Config = {
@@ -18,7 +18,7 @@ local Config = {
             -- where the market should spawn
             market_spawn_position = {x = 0, y = 3},
             -- the entity the spawn is surrounded by, has to match one entity defined in diggy_entities (default: rock-big)
-            start_entity = 'tree-01'
+            start_entity = 'rock-big'
         },
         -- controls the Daylight (Default diggy: enabled = true)
         night_time = {
@@ -101,9 +101,9 @@ local Config = {
                 {'diggy.cracking_sound_2'}
             },
             -- the entity that spawns on collapse, has to match one entity defined in diggy_entities (default: rock-big)
-            collapse_entity = 'tree-01',
+            collapse_entity = 'rock-big',
             -- the item that is used as icon for the collapse alert
-            collapse_item = 'wood'
+            collapse_item = 'stone'
         },
         -- Adds the ability to drop coins and track how many are sent into space
         coin_gathering = {

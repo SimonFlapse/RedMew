@@ -2,7 +2,6 @@
     Provides the ability to "mine" through out-of-map tiles by destroying or
     mining rocks next to it.
 ]]
-
 -- dependencies
 local Event = require 'utils.event'
 local Global = require 'utils.global'
@@ -32,16 +31,19 @@ local full_inventory_mining_cache = {}
 local robot_mining = {
     damage = 0,
     active_modifier = 0,
-    research_modifier = 0,
+    research_modifier = 0
 }
 
-Global.register({
-    full_inventory_mining_cache = full_inventory_mining_cache,
-    bot_mining_damage = robot_mining,
-}, function (tbl)
-    full_inventory_mining_cache = tbl.full_inventory_mining_cache
-    robot_mining = tbl.bot_mining_damage
-end)
+Global.register(
+    {
+        full_inventory_mining_cache = full_inventory_mining_cache,
+        bot_mining_damage = robot_mining
+    },
+    function(tbl)
+        full_inventory_mining_cache = tbl.full_inventory_mining_cache
+        robot_mining = tbl.bot_mining_damage
+    end
+)
 
 local function update_robot_mining_damage()
     -- remove the current buff
@@ -97,7 +99,9 @@ local function diggy_hole(entity)
             end
             default = entity_name
         end
-        rocks[i] = {name = default, position = void_position}
+        if not rocks[i] or not rocks[i].name then
+            rocks[i] = {name = default, position = void_position}
+        end
     end
 
     Template.insert(surface, tiles, rocks)
@@ -111,7 +115,7 @@ local artificial_tiles = {
     ['hazard-concrete-right'] = true,
     ['refined-concrete'] = true,
     ['refined-hazard-concrete-left'] = true,
-    ['refined-hazard-concrete-right'] = true,
+    ['refined-hazard-concrete-right'] = true
 }
 
 local function on_mined_tile(surface, tiles)
@@ -126,27 +130,31 @@ local function on_mined_tile(surface, tiles)
 
     Template.insert(surface, new_tiles, {})
 end
-Command.add('diggy-clear-void', {
-    description = {'command_description.diggy_clear_void'},
-    arguments = {'left_top_x', 'left_top_y', 'width', 'height', 'surface_index'},
-    debug_only = true,
-    required_rank = Ranks.admin,
-}, function(arguments)
-    local left_top_x = tonumber(arguments.left_top_x)
-    local left_top_y = tonumber(arguments.left_top_y)
-    local width = tonumber(arguments.width)
-    local height = tonumber(arguments.height)
-    local tiles = {}
-    local count = 0
-    for x = 0, width do
-        for y = 0, height do
-            count = count + 1
-            tiles[count] = {name = 'dirt-' .. random(1, 7), position = {x = x + left_top_x, y = y + left_top_y}}
+Command.add(
+    'diggy-clear-void',
+    {
+        description = {'command_description.diggy_clear_void'},
+        arguments = {'left_top_x', 'left_top_y', 'width', 'height', 'surface_index'},
+        debug_only = true,
+        required_rank = Ranks.admin
+    },
+    function(arguments)
+        local left_top_x = tonumber(arguments.left_top_x)
+        local left_top_y = tonumber(arguments.left_top_y)
+        local width = tonumber(arguments.width)
+        local height = tonumber(arguments.height)
+        local tiles = {}
+        local count = 0
+        for x = 0, width do
+            for y = 0, height do
+                count = count + 1
+                tiles[count] = {name = 'dirt-' .. random(1, 7), position = {x = x + left_top_x, y = y + left_top_y}}
+            end
         end
-    end
 
-    Template.insert(game.surfaces[arguments.surface_index], tiles, {})
-end)
+        Template.insert(game.surfaces[arguments.surface_index], tiles, {})
+    end
+)
 
 --[[--
     Registers all event handlers.
@@ -161,103 +169,127 @@ function DiggyHole.register(cfg)
     diggy_entities = cfg.diggy_entities
     robot_mining.damage = cfg.robot_initial_mining_damage
 
-    Event.add(defines.events.on_entity_died, function (event)
-        local entity = event.entity
-        local name = entity.name
-        if not is_diggy_rock(name) then
-            return
+    Event.add(
+        defines.events.on_entity_died,
+        function(event)
+            local entity = event.entity
+            local name = entity.name
+            if not is_diggy_rock(name) then
+                return
+            end
+            diggy_hole(entity)
+            if event.cause then
+                destroy_rock(entity.surface.create_entity, 10, entity.position)
+            end
         end
-        diggy_hole(entity)
-        if event.cause then
-            destroy_rock(entity.surface.create_entity, 10, entity.position)
-        end
-    end)
+    )
 
-    Event.add(defines.events.on_entity_damaged, function (event)
-        local entity = event.entity
-        local name = entity.name
+    Event.add(
+        defines.events.on_entity_damaged,
+        function(event)
+            local entity = event.entity
+            local name = entity.name
 
-        if entity.health ~= 0 then
-            return
-        end
+            if entity.health ~= 0 then
+                return
+            end
 
-        if not is_diggy_rock(name) then
-            return
-        end
+            if not is_diggy_rock(name) then
+                return
+            end
 
-        raise_event(defines.events.on_entity_died, {entity = entity, cause = event.cause, force = event.force})
-        entity.destroy()
-    end)
-
-    Event.add(defines.events.on_robot_mined_entity, function (event)
-        local entity = event.entity
-        local name = entity.name
-
-        if not is_diggy_rock(name) then
-            return
-        end
-
-        local health = entity.health
-        health = health - robot_mining.damage
-        event.buffer.clear()
-
-        local graphics_variation = entity.graphics_variation
-        local create_entity = entity.surface.create_entity
-        local position = entity.position
-        local force = event.robot.force
-
-        if health < 1 then
-            raise_event(defines.events.on_entity_died, {entity = entity, force = force})
-            mine_rock(create_entity, 6, position)
+            raise_event(defines.events.on_entity_died, {entity = entity, cause = event.cause, force = event.force})
             entity.destroy()
-            return
         end
-        entity.destroy()
+    )
 
-        local rock = create_entity({name = name, position = position})
-        mine_rock(create_entity, 1, position)
-        rock.graphics_variation = graphics_variation
-        rock.order_deconstruction(force)
-        rock.health = health
-    end)
+    Event.add(
+        defines.events.on_robot_mined_entity,
+        function(event)
+            local entity = event.entity
+            local name = entity.name
 
-    Event.add(defines.events.on_player_mined_entity, function (event)
-        local entity = event.entity
-        local name = entity.name
-        if not is_diggy_rock(name) then
-            return
+            if not is_diggy_rock(name) then
+                return
+            end
+
+            local health = entity.health
+            health = health - robot_mining.damage
+            event.buffer.clear()
+
+            local graphics_variation = entity.graphics_variation
+            local create_entity = entity.surface.create_entity
+            local position = entity.position
+            local force = event.robot.force
+
+            if health < 1 then
+                raise_event(defines.events.on_entity_died, {entity = entity, force = force})
+                mine_rock(create_entity, 6, position)
+                entity.destroy()
+                return
+            end
+            entity.destroy()
+
+            local rock = create_entity({name = name, position = position})
+            mine_rock(create_entity, 1, position)
+            rock.graphics_variation = graphics_variation
+            rock.order_deconstruction(force)
+            rock.health = health
         end
+    )
 
-        event.buffer.clear()
+    Event.add(
+        defines.events.on_player_mined_entity,
+        function(event)
+            local entity = event.entity
+            local name = entity.name
+            if not is_diggy_rock(name) then
+                return
+            end
 
-        diggy_hole(entity)
-        mine_rock(entity.surface.create_entity, 6, entity.position)
-    end)
+            event.buffer.clear()
 
-    Event.add(defines.events.on_robot_mined_tile, function (event)
-        on_mined_tile(event.robot.surface, event.tiles)
-    end)
+            mine_rock(entity.surface.create_entity, 6, entity.position)
+            diggy_hole(entity)
+        end
+    )
 
-    Event.add(defines.events.on_player_mined_tile, function (event)
-        on_mined_tile(game.surfaces[event.surface_index], event.tiles)
-    end)
+    Event.add(
+        defines.events.on_robot_mined_tile,
+        function(event)
+            on_mined_tile(event.robot.surface, event.tiles)
+        end
+    )
 
-    Event.add(Template.events.on_void_removed, function ()
-        ScoreTracker.change_for_global(mine_size_name, 1)
-    end)
+    Event.add(
+        defines.events.on_player_mined_tile,
+        function(event)
+            on_mined_tile(game.surfaces[event.surface_index], event.tiles)
+        end
+    )
+
+    Event.add(
+        Template.events.on_void_removed,
+        function()
+            ScoreTracker.change_for_global(mine_size_name, 1)
+        end
+    )
 
     local robot_damage_per_mining_prod_level = cfg.robot_damage_per_mining_prod_level
-    Event.add(defines.events.on_research_finished, function (event)
-        local new_modifier = event.research.force.mining_drill_productivity_bonus * 50 * robot_damage_per_mining_prod_level
+    Event.add(
+        defines.events.on_research_finished,
+        function(event)
+            local new_modifier = event.research.force.mining_drill_productivity_bonus * 50 * robot_damage_per_mining_prod_level
 
-        if (robot_mining.research_modifier == new_modifier) then
-            -- something else was researched
-            return
+            if (robot_mining.research_modifier == new_modifier) then
+                -- something else was researched
+                return
+            end
+
+            robot_mining.research_modifier = new_modifier
+            update_robot_mining_damage()
         end
-
-        robot_mining.research_modifier = new_modifier
-        update_robot_mining_damage()
-    end)
+    )
 end
 
 function DiggyHole.on_init()

@@ -202,6 +202,10 @@ local rock_huge_xp
 ---@param event LuaEvent
 local function on_player_mined_entity(event)
     local entity = event.entity
+    if not entity or not entity.valid then
+        --Debug.print('Entity not valid')
+        return
+    end
     local name = entity.name
     local player_index = event.player_index
     local force = game.get_player(player_index).force
