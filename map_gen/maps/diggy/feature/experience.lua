@@ -286,6 +286,9 @@ end
 ---@param event LuaEvent
 local function on_entity_died(event)
     local entity = event.entity
+    if not entity or not entity.valid then
+        return
+    end
     local force = event.force
     local cause = event.cause
     local entity_name = entity.name
@@ -302,11 +305,11 @@ local function on_entity_died(event)
                 floating_text_position = cause.position
             else
                 local level = get_force_data(force).current_level
-                if entity_name == 'sand-rock-big' then
+                if entity_name == 'tree-01' then
                     exp = floor((sand_rock_xp + level * 0.2) * 0.5)
-                elseif entity_name == 'rock-big' then
+                elseif entity_name == 'tree-03' then
                     exp = floor((rock_big_xp + level * 0.2) * 0.5)
-                elseif entity_name == 'rock-huge' then
+                elseif entity_name == 'tree-06' then
                     exp = floor((rock_huge_xp + level * 0.2) * 0.5)
                 end
                 floating_text_position = entity.position
@@ -615,9 +618,9 @@ function Experience.register(cfg)
     Event.on_nth_tick(61, update_gui)
 
     -- Prevents table lookup thousands of times
-    sand_rock_xp = config.XP['sand-rock-big']
-    rock_big_xp = config.XP['rock-big']
-    rock_huge_xp = config.XP['rock-huge']
+    sand_rock_xp = config.XP['tree-01']
+    rock_big_xp = config.XP['tree-03']
+    rock_huge_xp = config.XP['tree-06']
 end
 
 function Experience.on_init()

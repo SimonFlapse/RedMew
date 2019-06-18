@@ -74,12 +74,15 @@ local function insert_next_entities(data)
     local created_entities_count = 0
     local surface = data.surface
     local create_entity = surface.create_entity
+    local tick = game.tick
 
     pcall(function()
         --use pcall to assure tile_iterator is always incremented, to avoid endless loops
         for i = data.entity_iterator, min(data.entity_iterator + entities_per_call - 1, data.entities_n) do
             created_entities_count = created_entities_count + 1
-            created_entities[created_entities_count] = create_entity(data.entities[i])
+            local created_entity = create_entity(data.entities[i])
+            created_entity.graphics_variation = (tick % 10) + 1 --math.random(1, 10) or something else (Just don't include variation 11 and 12)
+            created_entities[created_entities_count] = created_entity
         end
     end)
 

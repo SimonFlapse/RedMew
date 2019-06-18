@@ -3,7 +3,7 @@ local abs = math.abs
 
 -- Entities that spawns as keys with values denoting the chance between 0-1. -1 means it defaults to that. Default: {['sand-rock-big'] = -1, ['rock-big'] = 0.2, ['rock-huge'] = 0.6}
 -- ['tree-01'] = -1, ['tree-02'] = 0.2, ['tree-03'] = 0.6
-local diggy_entities = {['sand-rock-big'] = -1, ['rock-big'] = 0.2, ['rock-huge'] = 0.6}
+local diggy_entities = {['tree-01'] = -1, ['tree-03'] = 0.2, ['tree-05'] = 0.4, ['tree-07'] = 0.6, ['tree-08'] = 0.8}
 
 -- this
 local Config = {
@@ -18,11 +18,11 @@ local Config = {
             -- where the market should spawn
             market_spawn_position = {x = 0, y = 3},
             -- the entity the spawn is surrounded by, has to match one entity defined in diggy_entities (default: rock-big)
-            start_entity = 'rock-big'
+            start_entity = 'tree-01'
         },
         -- controls the Daylight (Default diggy: enabled = true)
         night_time = {
-            enabled = true -- true = No Daylight, false = Day/night circle (Solar panels work)
+            enabled = false -- true = No Daylight, false = Day/night circle (Solar panels work)
         },
         -- controls setting up the players
         setup_player = {
@@ -70,7 +70,7 @@ local Config = {
         },
         -- adds the ability to collapse caves
         diggy_cave_collapse = {
-            enabled = true,
+            enabled = false,
             -- adds per tile what the current stress is
             enable_stress_grid = false,
             -- shows the mask on spawn
@@ -352,9 +352,9 @@ local Config = {
             -- percentage * mining productivity level gets added to mining speed
             mining_speed_productivity_multiplier = 5,
             XP = {
-                ['sand-rock-big'] = 5,
-                ['rock-big'] = 5,
-                ['rock-huge'] = 10,
+                ['tree-01'] = 5,
+                ['tree-03'] = 5,
+                ['tree-06'] = 10,
                 ['rocket_launch'] = 0.05, -- XP reward in percentage of total experience when a rocket launches (Diggy default: 0.05 which equals 5%)
                 ['rocket_launch_max'] = 500000, -- Max XP reward from rocket launches (Diggy default: 500000)
                 ['automation-science-pack'] = 4,

@@ -92,15 +92,10 @@ local function diggy_hole(entity)
         local void_position = out_of_map_found[i]
         tiles[i] = {name = 'dirt-' .. random(1, 7), position = void_position}
         local predicted = random()
-        local default
         for entity_name, chance in pairs(diggy_entities) do
-            if chance ~= -1 and predicted < chance then
+            if predicted > chance then
                 rocks[i] = {name = entity_name, position = void_position}
             end
-            default = entity_name
-        end
-        if not rocks[i] or not rocks[i].name then
-            rocks[i] = {name = default, position = void_position}
         end
     end
 
@@ -173,14 +168,18 @@ function DiggyHole.register(cfg)
         defines.events.on_entity_died,
         function(event)
             local entity = event.entity
+            if not entity or not entity.valid then
+                return
+            end
+
             local name = entity.name
             if not is_diggy_rock(name) then
                 return
             end
-            diggy_hole(entity)
             if event.cause then
                 destroy_rock(entity.surface.create_entity, 10, entity.position)
             end
+            diggy_hole(entity)
         end
     )
 
