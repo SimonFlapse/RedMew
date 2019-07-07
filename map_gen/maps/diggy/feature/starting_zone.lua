@@ -27,12 +27,12 @@ function StartingZone.register(config)
     local starting_zone_size = config.starting_size
 
     local function on_chunk_generated(event)
-        if event.surface ~= RS.get_surface() then
+        local surface = event.surface
+        if surface ~= game.get_surface(config.surface) then
             return
         end
         local start_point_area = {{-0.9, -0.9}, {0.9, 0.9}}
         local start_point_cleanup = {{-0.9, -0.9}, {1.9, 1.9}}
-        local surface = event.surface
 
         -- hack to figure out whether the important chunks are generated via diggy.feature.refresh_map.
         if (4 ~= surface.count_tiles_filtered({start_point_area, name = 'lab-dark-1'})) then

@@ -58,6 +58,7 @@ function Scenario.register()
     each_enabled_feature(
         function(feature_name, feature_config)
             local feature
+            feature_config.surface = 'experimental'
 
             if not pcall(function() feature = require ('map_gen.maps.diggy_experimental.feature.' .. feature_name) end) then
                 feature = require ('map_gen.maps.diggy.feature.' .. feature_name)
@@ -85,6 +86,10 @@ function Scenario.register()
     ScenarioInfo.set_map_description('Dig your way through!')
 
     global.diggy_scenario_registered = true
+
+    Event.on_init(function()
+        game.create_surface('experimental')
+    end)
 end
 
 return Scenario

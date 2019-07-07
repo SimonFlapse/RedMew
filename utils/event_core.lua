@@ -23,6 +23,11 @@ if _DEBUG then
     function call_handlers(handlers, event)
         for i = 1, #handlers do
             local handler = handlers[i]
+
+            if handler == nil then
+                log('Handler is nil for event_name: ' .. i)
+            end
+
             handler(event)
         end
     end

@@ -333,6 +333,7 @@ stds.factorio_control = {
                 "create_random_generator",
                 "create_surface",
                 "delete_surface",
+                "get_surface",
                 "desync_players",
                 "direction_to_string",
                 "disable_replay",

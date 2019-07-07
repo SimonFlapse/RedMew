@@ -448,7 +448,7 @@ function DiggyCaveCollapse.register(cfg)
 
     mask_init(config)
     if (config.enable_mask_debug) then
-        local surface = RS.get_surface()
+        local surface = game.get_surface(config.surface)
         mask_disc_blur(
             0,
             0,

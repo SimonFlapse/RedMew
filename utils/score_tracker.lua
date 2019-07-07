@@ -47,7 +47,8 @@ function Public.register(name, locale_string, icon)
     end
 
     if score_metadata[name] then
-        error(format('Trying to register score type for "%s" while it has already been registered.', name), 2)
+        return score_metadata[name]
+        --error(format('Trying to register score type for "%s" while it has already been registered.', name), 2)
     end
 
     local score = {

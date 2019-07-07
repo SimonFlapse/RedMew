@@ -10,6 +10,7 @@ local RS = require 'map_gen.shared.redmew_surface'
 
 -- this
 local NightTime = {}
+local config = {}
 
 --- Event handler for on_built_entity
 -- checks if player placed a solar-panel and displays a popup
@@ -39,16 +40,17 @@ end
 -- assigns the two events to the corresponding local event handlers
 -- @param config table containing the configurations for NightTime.lua
 --
-function NightTime.register()
+function NightTime.register(cfg)
     Event.add(defines.events.on_built_entity, on_built_entity)
     Event.add(defines.events.on_research_finished, on_research_finished)
+    config = cfg
 end
 
 --- Sets the daytime to 0.5 and freezes the day/night circle.
 -- a daytime of 0.5 is the value where every light and ambient lights are turned on.
 --
 function NightTime.on_init()
-    local surface = RS.get_surface()
+    local surface = game.get_surface(config.surface)
 
     surface.daytime = 0.5
     surface.freeze_daytime = 1

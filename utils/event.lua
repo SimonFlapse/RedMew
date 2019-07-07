@@ -161,6 +161,9 @@ function Event.add(event_name, handler)
         error('Calling Event.add after on_init() or on_load() has run is a desync risk.', 2)
     end
 
+    if handler == nil then
+        log('Handler is nil for event_name: ' .. event_name)
+    end
     core_add(event_name, handler)
 end
 

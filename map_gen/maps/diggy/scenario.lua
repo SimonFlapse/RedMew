@@ -56,6 +56,7 @@ function Scenario.register()
 
     each_enabled_feature(
         function(feature_name, feature_config)
+            feature_config.surface = 'redmew'
             local feature = require ('map_gen.maps.diggy.feature.' .. feature_name)
             if ('function' ~= type(feature.register)) then
                 error('Feature ' .. feature_name .. ' did not define a register function.')

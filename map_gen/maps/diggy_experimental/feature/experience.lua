@@ -587,10 +587,10 @@ function Experience.register(cfg)
     config = cfg
 
     --Adds the function on how to calculate level caps (When to level up)
-    local ForceControlBuilder = ForceControl.register(level_up_formula)
+    --local ForceControlBuilder = ForceControl.register(level_up_formula)
 
     --Adds a function that'll be executed at every level up
-    ForceControlBuilder.register_on_every_level(
+    --[[ForceControlBuilder.register_on_every_level(
         function(level_reached, force)
             Toast.toast_force(force, 10, {'diggy.toast_new_level', level_reached})
             Experience.update_inventory_slots(force, level_reached)
@@ -598,7 +598,7 @@ function Experience.register(cfg)
             Experience.update_health_bonus(force, level_reached)
             Experience.update_market_contents(force)
         end
-    )
+    )]]
 
     -- Events
     Event.add(defines.events.on_player_mined_entity, on_player_mined_entity)
@@ -606,7 +606,7 @@ function Experience.register(cfg)
     Event.add(defines.events.on_rocket_launched, on_rocket_launched)
     Event.add(defines.events.on_player_respawned, on_player_respawned)
     Event.add(defines.events.on_entity_died, on_entity_died)
-    Event.add(defines.events.on_player_created, on_player_created)
+    --Event.add(defines.events.on_player_created, on_player_created)
     Event.on_nth_tick(61, update_gui)
 
     -- Prevents table lookup thousands of times
@@ -616,7 +616,7 @@ end
 function Experience.on_init()
     --Adds the 'player' force to participate in the force control system.
     local force = game.forces.player
-    ForceControl.register_force(force)
+    --ForceControl.register_force(force)
 
     local force_name = force.name
     for _, prototype in pairs(config.unlockables) do
